@@ -198,6 +198,7 @@ def main():
 				x = line.rstrip().split()
 				if x[0] == args.ref:
 					# parse this SNP line
+					any_ref_line = 1
 					(this_groups, proportions) = checkSNP(x, this_groups, proportions, args)
 		
 		f.close()
