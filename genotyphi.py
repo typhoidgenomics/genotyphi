@@ -150,27 +150,43 @@ def parseGeno(this_groups, proportions):
 	#if len(subclades) == 0:
 	#	if len(clades) == 1:
 	#		subclades.append(clades[0] + ".0")
-			
-	info = ",".join(subclades) + "\t" + ",".join(clades) + "\t" + ",".join(primary)
+	
+	# store final genotype, to the lowest level available
+	final_geno = primary[0]
+	if len(clades) > 0:
+		final_geno = ",".join(clades)
+	if len(subclades) > 0:
+		final_geno = ",".join(subclades)
 	
 	# add proportion of reads supporting each of these groups
-	p = []
+	p_prod = 1
+	
+	p_sub = []
 	for group in subclades:
 		if group in proportions:
-			p.append(str(round(proportions[group],2)))
-	info += "\t" + ",".join(p)
+			p_sub.append(str(round(proportions[group],2)))
+			p_prod = p_prod * proportions[group]
 	
-	p = []
+	p_cl= []
 	for group in clades:
 		if group in proportions:
-			p.append(str(round(proportions[group],2)))
-	info += "\t" + ",".join(p)
+			p_cl.append(str(round(proportions[group],2)))
+			p_prod = p_prod * proportions[group]
 	
-	p = []
+	p_pr = []
 	for group in primary:
 		if group in proportions:
-			p.append(str(round(proportions[group],2)))
-	info += "\t" + ",".join(p)
+			p_pr.append(str(round(proportions[group],2)))
+			p_prod = p_prod * proportions[group]
+	
+	# final call
+	info = final_geno + "\t" + str(round(p_prod,2))
+	
+	# level calls
+	info += "\t" + ",".join(subclades) + "\t" + ",".join(clades) + "\t" + ",".join(primary)
+	
+	# level proportions
+	info += "\t" + ",".join(p_sub) + "\t" + ",".join(p_cl) + "\t" + ",".join(p_pr)
 	
 	return info
 
@@ -178,7 +194,7 @@ def parseGeno(this_groups, proportions):
 def main():
 	args = parse_args()
 
-	print "\t".join(["File","Subclade","Clade","PrimaryClade","Support_Subclade","Support_Clade","Support_PrimaryClade"])
+	print "\t".join(["File","Final_call","Final_call_support","Subclade","Clade","PrimaryClade","Support_Subclade","Support_Clade","Support_PrimaryClade"])
 	
 	for vcf in args.vcf:
 		this_groups = [] # list of groups identified by defining SNPs
@@ -186,8 +202,9 @@ def main():
 		
 		# read file
 		(file_name,ext) = os.path.splitext(vcf)
-		if ext == "gz":
-			f = gzip.open(file_name,"r")
+		
+		if ext == ".gz":
+			f = gzip.open(vcf,"r")
 		else:
 			f = open(vcf,"r")
 
@@ -207,7 +224,7 @@ def main():
 			info = parseGeno(this_groups, proportions)
 			print vcf + "\t" + info
 		else:
-			print vcf + "\twrongref"
+			print vcf + "\tNo SNPs encountered against expected reference. Wrong reference or no SNP calls?"
 				
 
 # call main function
