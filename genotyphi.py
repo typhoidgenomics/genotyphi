@@ -47,6 +47,9 @@ def parse_args():
 	"Parse the input arguments, use '-h' for help"
 	parser = ArgumentParser(description='VCF to Typhi genotypes')
 	parser.add_argument(
+		'--vcf_parsnp', nargs='+', type=str, required=False,
+		help='Multi-sample VCF file(s) to genotype (e.g. ParSNP output; Mapping MUST have been done using CT18 as a reference sequence)')
+	parser.add_argument(
 		'--vcf', nargs='+', type=str, required=False,
 		help='VCF file(s) to genotype (Mapping MUST have been done using CT18 as a reference sequence)')
 	parser.add_argument( '--ref', type=str, required=True, help='Name of the reference in the VCF file (#CHROM column). Note that CT18 has genotype 3.2.1. If all your strains return this genotype, it is likely you have specified the name of the refrence sequence incorrectly; please check your VCFs.') 
@@ -80,6 +83,22 @@ def checkSNP(vcf_line_split, this_groups, proportions, args):
 					this_groups.append(groups[i]) # retrieve the group that this SNP defines
 					proportions[groups[i]] = snp_proportion
 	return (this_groups, proportions)
+
+
+def checkSNPmulti(vcf_line_split, this_groups, args):
+	snp = int(vcf_line_split[1])
+	if snp in loci:
+		i = loci.index(snp)
+		strain = 0
+		for gt in vcf_line_split[10:]:
+			if (int(gt) == 1) and (vcf_line_split[4] == snp_alleles[i]):
+				if strain in this_groups:
+					this_groups[strain].append(groups[i]) # retrieve the group that this SNP defines
+				else:
+					this_groups[strain] = [groups[i]]
+			strain += 1
+	return this_groups
+
 
 # sort groups into the three levels (primary, clade, subclade)
 def parseGeno(this_groups, proportions):
@@ -180,7 +199,11 @@ def parseGeno(this_groups, proportions):
 			p_prod = p_prod * proportions[group]
 	
 	# final call
-	info = final_geno + "\t" + str(round(p_prod,2))
+	info = final_geno + "\t"
+	if 'A' in proportions:
+		info += 'A' # annotate as 'A' to indicate this comes from assembled data and not reads
+	else:
+		info += str(round(p_prod,2)) # indicate proportion of reads supporting this call
 	
 	# level calls
 	info += "\t" + ",".join(subclades) + "\t" + ",".join(clades) + "\t" + ",".join(primary)
@@ -196,36 +219,77 @@ def main():
 
 	print "\t".join(["File","Final_call","Final_call_support","Subclade","Clade","PrimaryClade","Support_Subclade","Support_Clade","Support_PrimaryClade"])
 	
-	for vcf in args.vcf:
-		this_groups = [] # list of groups identified by defining SNPs
-		proportions = {} # proportion of reads supporting each defining SNP; key = group, value = proportion
+	# PARSE MAPPING BASED VCFS (1 per strain)
+	
+	if args.vcf:
+		for vcf in args.vcf:
+			this_groups = [] # list of groups identified by defining SNPs
+			proportions = {} # proportion of reads supporting each defining SNP; key = group, value = proportion
 		
-		# read file
-		(file_name,ext) = os.path.splitext(vcf)
+			# read file
+			(file_name,ext) = os.path.splitext(vcf)
 		
-		if ext == ".gz":
-			f = gzip.open(vcf,"r")
-		else:
-			f = open(vcf,"r")
+			if ext == ".gz":
+				f = gzip.open(vcf,"r")
+			else:
+				f = open(vcf,"r")
 
-		any_ref_line = 0
+			any_ref_line = 0
 		
-		for line in f:
-			if not line.startswith("#"):
-				x = line.rstrip().split()
-				if x[0] == args.ref:
-					# parse this SNP line
-					any_ref_line = 1
-					(this_groups, proportions) = checkSNP(x, this_groups, proportions, args)
+			for line in f:
+				if not line.startswith("#"):
+					x = line.rstrip().split()
+					if x[0] == args.ref:
+						# parse this SNP line
+						any_ref_line = 1
+						(this_groups, proportions) = checkSNP(x, this_groups, proportions, args)
 		
-		f.close()
+			f.close()
 
-		if any_ref_line > 0:
-			info = parseGeno(this_groups, proportions)
-			print vcf + "\t" + info
-		else:
-			print vcf + "\tNo SNPs encountered against expected reference. Wrong reference or no SNP calls?"
+			if any_ref_line > 0:
+				info = parseGeno(this_groups, proportions)
+				print vcf + "\t" + info
+			else:
+				print vcf + "\tNo SNPs encountered against expected reference. Wrong reference or no SNP calls?"
+
+	# PARSE PARSNP VCF (multiple strains)
 				
+	if args.vcf_parsnp:
+		
+		for vcfm in args.vcf_parsnp:
+		
+			# read file
+			(file_name,ext) = os.path.splitext(vcfm)
+		
+			if ext == ".gz":
+				f = gzip.open(vcfm,"r")
+			else:
+				f = open(vcfm,"r")
+
+			any_ref_line = 0	
+		
+			this_groups = {} # list of groups identified by defining SNPs, key = strain id (column number)
+			strains = []
+			
+			for line in f:
+				x = line.rstrip().split()
+				if x[0] == "#CHROM":
+					strains = x[10:]
+				if not line.startswith("#"):
+					if x[0] == args.ref:
+						any_ref_line = 1 # parse this SNP line
+						this_groups = checkSNPmulti(x, this_groups, args)
+		
+			f.close()	
+			
+			# collate by strain
+			if any_ref_line > 0:
+				for strain in this_groups:
+					info = parseGeno(this_groups[strain], ['A'])
+					print strains[strain] + "\t" + info
+			else:
+				print strains[strain] + "\tNo SNPs encountered against expected reference. Wrong reference or no SNP calls?"
+			
 
 # call main function
 if __name__ == '__main__':
