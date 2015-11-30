@@ -1,42 +1,15 @@
 #!/usr/bin/env python
 #
-# Read VCF file, assign Typhi genotype codes.
+# Input BAM (recommended) or VCF (if highly trusted SNP data) relative to Typhi CT18 (AL513382) and assign Typhi genotype codes.
 #
-# Note the SNP coordinates used here are relative to Typhi CT18 (AL513382) 
-#   so the input MUST be a VCF obtained via mapping to this reference sequence.
+# Authors - Kat Holt (kholt@unimelb.edu.au), Zoe Dyson (zoe.dyson@unimelb.edu.au)
 #
-# You MUST tell the script the name of the Typhi CT18 chromosome reference in your VCF 
-#   file, this is the entry in the first column (#CHROM) of the data part of the file.
-#   This is necessary in case you have mapped to multiple replicons (e.g. chromosome and
-#   plasmid) and all the results appear in the VCF file.
-#
-# E.g. if your VCF file looks like this:
-# #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	2332STDY5573284
-#AL513382	744	.	A	G	0.213	.	DP=49;VDB=5.579080e-02;RPB=9.166667e-01;AF1=0.495;AC1=1;DP4=6,24,9,0;MQ=60;FQ=-10.4;PV4=2.4e-05,7.9e-08,1,1	GT:PL:DP:SP:GQ	0/1:17,0,255:39:46:5
-#AL513382	762	.	A	G	29	.	DP=43;VDB=1.182296e-01;RPB=1.876799e+00;AF1=0.5;AC1=1;DP4=6,23,12,0;MQ=60;FQ=32;PV4=2.4e-06,1.4e-12,1,1	GT:PL:DP:SP:GQ	0/1:59,0,255:41:56:62
-#AL513382	3727	.	A	G	30	.	DP=51;VDB=1.213276e-01;RPB=1.690455e+00;AF1=0.5;AC1=1;DP4=7,26,15,0;MQ=60;FQ=33;PV4=1.6e-07,2.4e-17,1,1	GT:PL:DP:SP:GQ	0/1:60,0,255:48:68:63
-#
-#    then you would set --ref AL513382
-#
-# Or if your VCF file looks like this:
-# #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	2332STDY5573284
-#CT18_ref	744	.	A	G	0.213	.	DP=49;VDB=5.579080e-02;RPB=9.166667e-01;AF1=0.495;AC1=1;DP4=6,24,9,0;MQ=60;FQ=-10.4;PV4=2.4e-05,7.9e-08,1,1	GT:PL:DP:SP:GQ	0/1:17,0,255:39:46:5
-#CT18_ref	762	.	A	G	29	.	DP=43;VDB=1.182296e-01;RPB=1.876799e+00;AF1=0.5;AC1=1;DP4=6,23,12,0;MQ=60;FQ=32;PV4=2.4e-06,1.4e-12,1,1	GT:PL:DP:SP:GQ	0/1:59,0,255:41:56:62
-#CT18_ref	3727	.	A	G	30	.	DP=51;VDB=1.213276e-01;RPB=1.690455e+00;AF1=0.5;AC1=1;DP4=7,26,15,0;MQ=60;FQ=33;PV4=1.6e-07,2.4e-17,1,1	GT:PL:DP:SP:GQ	0/1:60,0,255:48:68:63
-#
-#    then you would set --ref CT18_ref
-#
-# Note CT18 has the genotype 3.2.1. If you specify the wrong reference name for the VCF
-#   file, the script will fail to find any confident SNPs that differentiate your input 
-#   strain from CT18 and will report that your strain is 3.2.1. So if all your strains
-#   genotype as 3.2.1, check that you have 
-#
-# Authors - Kat Holt (kholt@unimelb.edu.au)
+# Documentation - https://github.com/katholt/genotyphi
 #
 # Dependencies:
-#	 NONE
+#	 SAMtools and bcftools are required to genotype from BAMs.
 #
-# Last modified - Nov 9, 2015
+# Last modified - Nov 30, 2015
 #
 
 from argparse import (ArgumentParser, FileType)
