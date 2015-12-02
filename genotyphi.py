@@ -4,7 +4,7 @@
 #
 # Authors - Kat Holt (kholt@unimelb.edu.au), Zoe Dyson (zoe.dyson@unimelb.edu.au)
 #
-# Documentation - https://github.com/katholt/genotyphi
+# Documentation - https://github.com/katholt/genotyphi 
 #
 # Dependencies:
 #	 SAMtools and bcftools are required to genotype from BAMs.
