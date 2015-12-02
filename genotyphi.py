@@ -9,7 +9,7 @@
 # Dependencies:
 #	 SAMtools and bcftools are required to genotype from BAMs.
 #
-# Last modified - Dec 1st, 2015
+# Last modified - Dec 2nd, 2015
 #
 
 from argparse import (ArgumentParser, FileType)
@@ -269,11 +269,14 @@ def main():
 
 
     # PRINT OUTPUT HEADER
-
-    output_file.write('\t'.join(
-        ['File', 'Final_call', 'Final_call_support', 'Subclade', 'Clade', 'PrimaryClade', 'Support_Subclade',
-         'Support_Clade', 'Support_PrimaryClade', 'Number of SNPs called\n']))
-
+    if args.bam:
+        output_file.write('\t'.join(
+            ['File', 'Final_call', 'Final_call_support', 'Subclade', 'Clade', 'PrimaryClade', 'Support_Subclade',
+             'Support_Clade', 'Support_PrimaryClade', 'Number of SNPs called\n']))
+    else:
+        output_file.write('\t'.join(
+            ['File', 'Final_call', 'Final_call_support', 'Subclade', 'Clade', 'PrimaryClade', 'Support_Subclade',
+             'Support_Clade', 'Support_PrimaryClade\n']))
 
     # PARSE MAPPING BASED VCFS (1 per strain)
 
@@ -352,6 +355,8 @@ def main():
             else:
                 output_file.write(strains[
                           strain] + '\tNo SNPs encountered against expected reference. Wrong reference or no SNP calls?\n')
+
+    output_file.close()
 
 # call main function
 if __name__ == '__main__':
