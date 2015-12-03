@@ -27,9 +27,6 @@ def parse_args():
 	parser.add_argument('--mode', required=False, 
 		help='Mode to run in based on input files (vcf, bam, or vcf_parsnp)')
 	parser.add_argument(
-		'--vcf_parsnp', nargs='+', type=str, required=False,
-		help='Multi-sample VCF file(s) to genotype (e.g. ParSNP output; Mapping MUST have been done using CT18 as a reference sequence)')
-	parser.add_argument(
 		'--vcf', nargs='+', type=str, required=False,
 		help='VCF file(s) to genotype (Mapping MUST have been done using CT18 as a reference sequence)')
 	parser.add_argument('--bam', nargs='+', type=str, required=False,
@@ -245,7 +242,7 @@ def run_command(command, **kwargs):
 def main():
 	args = parse_args()
 		
-	if (((args.mode == 'vcf') and args.vcf and args.ref_id) or ((args.mode == 'bam') and args.bam and args.ref) or (args.mode == 'vcf_parsnp')):
+	if (((args.mode == 'vcf') and args.vcf and args.ref_id) or ((args.mode == 'bam') and args.bam and args.ref) or ((args.mode == 'vcf_parsnp') and args.vcf)):
 		
 		# Initialise output file and timestamp
 		timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('_%Y.%m.%d_%H:%M:%S')
@@ -253,7 +250,7 @@ def main():
 
 		# GENERATE VCFS (1 per strain) FROM BAMS
 
-		if args.bam:
+		if args.mode == 'bam':
 		
 			if args.ref:
 				#obtain ref_id from fasta file
@@ -300,7 +297,7 @@ def main():
 
 		# PARSE MAPPING BASED VCFS (1 per strain)
 
-		if args.vcf:
+		if (args.vcf and (args.mode != 'vcf_parsnp')):
 			for vcf in args.vcf:
 				snp_count = 0
 				this_groups = []  # list of groups identified by defining SNPs
@@ -340,9 +337,9 @@ def main():
 
 		# PARSE PARSNP VCF (multiple strains)
 
-		if args.vcf_parsnp:
+		if args.mode == 'vcf_parsnp':
 
-			for vcfm in args.vcf_parsnp:
+			for vcfm in args.vcf:
 
 				# read file
 				(file_name, ext) = os.path.splitext(vcfm)
