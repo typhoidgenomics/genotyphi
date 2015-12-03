@@ -6,6 +6,16 @@ For short read data, we recommend using the raw alignments (BAM files) as input 
 
 For assemblies, we recommend using [ParSNP](http://harvest.readthedocs.org/) to align genomes to the CT18 reference. The resulting multi-sample VCF file(s) can be passed directly to this script via --vcf_parsnp.
 
+[Basic Usage](https://github.com/katholt/genotyphi/#basic-usage---own-bam-recommended-if-you-have-reads-available)
+
+[Options](https://github.com/katholt/genotyphi/#options)
+
+[Outputs](https://github.com/katholt/genotyphi/#outputs)
+
+[Inputs](https://github.com/katholt/genotyphi/#using-bowtie2-to-genotype-from-bam-files) - if you have reads
+
+[Inputs](https://github.com/katholt/genotyphi/#using-parsnp-to-genotype-from-genome-assemblies) - if you have assemblies
+
 ## Basic Usage - own BAM (recommended if you have reads available)
 
 ```
@@ -23,6 +33,8 @@ python genotyphi.py --mode vcf --vcf *.vcf --ref_id AL513382
 ```
 python genotyphi.py --mode vcf_parsnp --vcf parsnp.vcf
 ```
+
+## Options
 
 ### Required options
 
@@ -93,6 +105,43 @@ As recombination is extremely rare in S. Typhi, it is unlikely that DNA isolated
 
 WARNING: Note the reference genome CT18 has the genotype 3.2.1. It is therefore possible that unexpected behaviour (e.g. wrong reference, unspecified reference name, or problems that results in overall poor quality SNP calls in the VCF) can sometimes result in calls of 3.2.1 ... so if you see lots of strains being assigned this genotype, it is worth investigating further.
 
+## Using Bowtie2 to genotype from bam files
+
+We recommend using [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) to align reads to the CT18 reference, and [SAMtools](http://http://samtools.sourceforge.net/) to convert the *.sam file to the *.bam format.  The resulting bam file(s) can be passed directly to this script via --bam.
+
+For example:
+
+```
+# Download CT18 (AL513382) reference genome
+
+wget ftp://ftp.ncbi.nih.gov/genomes/Bacteria/Salmonella_enterica_serovar_Typhi_CT18_uid57793/NC_003198.fna
+
+mv NC_003198.fna AL513382.fasta
+
+# Use bowtie to map reads to the CT18 reference genome
+
+For example, to align paired end reads to the CT18 reference genome sequence:
+
+bowtie2-build AL513382.fasta CT18
+
+bowtie2 -p 2 -x CT18 -1 forwards_reads.fastq -2 reverse_reads.fastq -S output.sam
+ 
+samtools view -bS output.sam > unsorted_output.bam
+
+samtools sort unsorted_output.bam output
+
+# Call Typhi genotypes from the resulting BAM(s)
+
+python genotyphi.py --mode bam --bam output.bam --ref AL513382.fasta
+
+# Output: For bam output the column 'Number of SNPs called' reports the number of SNPs present in the resultant VCF file(s).
+
+For example:
+
+File	Final_call	Final_call_support	Subclade	Clade	PrimaryClade	Support_Subclade	Support_Clade	Support_PrimaryClade	Number of SNPs called
+
+```
+
 ## Using ParSNP to genotype from genome assemblies
 
 We recommend using [ParSNP](http://harvest.readthedocs.org/) to align genomes to the CT18 reference. The resulting multi-sample VCF file(s) can be passed directly to this script via --vcf_parsnp.
@@ -129,42 +178,5 @@ python genotyphi.py --mode vcf_parsnp --vcf output/parsnp.vcf
 File	Final_call	Final_call_support	Subclade	Clade	PrimaryClade	Support_Subclade	Support_Clade	Support_PrimaryClade
 Pstx12.fasta	4.3	A		4.3	4			
 Ty2.fasta	4.1	A		4.1	4	
-
-```
-
-## Using Bowtie2 to genotype from bam files
-
-We recommend using [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) to align reads to the CT18 reference, and [SAMtools](http://http://samtools.sourceforge.net/) to convert the *.sam file to the *.bam format.  The resulting bam file(s) can be passed directly to this script via --bam.
-
-For example:
-
-```
-# Download CT18 (AL513382) reference genome
-
-wget ftp://ftp.ncbi.nih.gov/genomes/Bacteria/Salmonella_enterica_serovar_Typhi_CT18_uid57793/NC_003198.fna
-
-mv NC_003198.fna AL513382.fasta
-
-# Use bowtie to map reads to the CT18 reference genome
-
-For example, to align paired end reads to the CT18 reference genome sequence:
-
-bowtie2-build AL513382.fasta CT18
-
-bowtie2 -p 2 -x CT18 -1 forwards_reads.fastq -2 reverse_reads.fastq -S output.sam
- 
-samtools view -bS output.sam > unsorted_output.bam
-
-samtools sort unsorted_output.bam output
-
-# Call Typhi genotypes from the resulting BAM(s)
-
-python genotyphi.py --mode bam --bam output.bam --ref AL513382.fasta
-
-# Output: For bam output the column 'Number of SNPs called' reports the number of SNPs present in the resultant VCF file(s).
-
-For example:
-
-File	Final_call	Final_call_support	Subclade	Clade	PrimaryClade	Support_Subclade	Support_Clade	Support_PrimaryClade	Number of SNPs called
 
 ```
