@@ -6,7 +6,7 @@ For short read data, we recommend using the raw alignments (BAM files) as input 
 
 For assemblies, we recommend using [ParSNP](http://harvest.readthedocs.org/) to align genomes to the CT18 reference. The resulting multi-sample VCF file(s) can be passed directly to this script via --vcf_parsnp.
 
-[Basic Usage](https://github.com/katholt/genotyphi/#basic-usage---own-bam-recommended-if-you-have-reads-available)
+[Basic Usage](https://github.com/katholt/genotyphi/#basic-usage---own-bam-recommended-if-you-have-reads)
 
 [Options](https://github.com/katholt/genotyphi/#options)
 
@@ -16,7 +16,7 @@ For assemblies, we recommend using [ParSNP](http://harvest.readthedocs.org/) to 
 
 [Generating input VCFs from assemblies (with example)](https://github.com/katholt/genotyphi/#using-parsnp-to-genotype-from-genome-assemblies)
 
-## Basic Usage - own BAM (recommended if you have reads available)
+## Basic Usage - own BAM (recommended if you have reads)
 
 ```
 python genotyphi.py --mode bam --bam *.bam --ref AL513382.fasta
