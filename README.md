@@ -144,7 +144,7 @@ samtools sort unsorted_output.bam output
 
 # Call Typhi genotypes from the resulting BAM(s)
 
-python genotyphi.py --mode bam --bam output.bam --ref AL513382.fasta --output genotypes_test.txt
+python genotyphi.py --mode bam --bam output.bam --ref CT18.fasta --output genotypes_test.txt
 
 ```
 
