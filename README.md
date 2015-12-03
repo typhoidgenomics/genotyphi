@@ -116,9 +116,10 @@ For example:
 ```
 # Download CT18 (AL513382) reference genome
 
-wget ftp://ftp.ncbi.nih.gov/genomes/Bacteria/Salmonella_enterica_serovar_Typhi_CT18_uid57793/NC_003198.fna
+wget ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA_000195995.1_ASM19599v1/GCA_000195995.1_ASM19599v1_genomic.fna.gz
 
-mv NC_003198.fna AL513382.fasta
+gunzip GCA_000195995.1_ASM19599v1_genomic.fna.gz
+mv GCA_000195995.1_ASM19599v1_genomic.fna AL513382.fasta
 
 # Download reads for S. Typhi 8(04)N, isolated from Vietnam in 2004
 
@@ -159,18 +160,22 @@ For example:
 ```
 # Download CT18 reference genome
 
-wget ftp://ftp.ncbi.nih.gov/genomes/Bacteria/Salmonella_enterica_serovar_Typhi_CT18_uid57793/NC_003198.fna
+wget ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA_000195995.1_ASM19599v1/GCA_000195995.1_ASM19599v1_genomic.fna.gz
 
-mv NC_003198.fna CT18.fasta
+gunzip GCA_000195995.1_ASM19599v1_genomic.fna.gz
+mv GCA_000195995.1_ASM19599v1_genomic.fna AL513382.fasta
 
 # Download two example Typhi genomes for genotyping
 
-wget ftp://ftp.ncbi.nih.gov/genomes/Bacteria/Salmonella_enterica_serovar_Typhi_P_stx_12_uid87001/NC_016832.fna
-wget ftp://ftp.ncbi.nih.gov/genomes/Bacteria/Salmonella_enterica_serovar_Typhi_Ty2_uid57973/NC_004631.fna
+wget ftp://ftp.ncbi.nlm.nih.gov/genomes/genbank/bacteria/Salmonella_enterica/latest_assembly_versions/GCA_000245535.1_ASM24553v1/GCA_000245535.1_ASM24553v1_genomic.fna.gz
+wget ftp://ftp.ncbi.nih.gov/genomes/genbank/bacteria/Salmonella_enterica/latest_assembly_versions/GCA_000007545.1_ASM754v1/GCA_000007545.1_ASM754v1_genomic.fna.gz
+
+gunzip GCA_000245535.1_ASM24553v1_genomic.fna.gz
+gunzip GCA_000007545.1_ASM754v1_genomic.fna.gz
 
 mkdir genomes/
-mv NC_016832.fna genomes/Pstx12.fasta
-mv NC_004631.fna genomes/Ty2.fasta
+mv GCA_000245535.1_ASM24553v1_genomic.fna genomes/Pstx12.fasta
+mv GCA_000007545.1_ASM754v1_genomic.fna.gz genomes/Ty2.fasta
 
 # Use ParSNP to generate variant calls (VCF) for these genomes against the CT18 reference sequence
 
