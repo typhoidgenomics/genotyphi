@@ -6,17 +6,21 @@ For short read data, we recommend using the raw alignments (BAM files) as input 
 
 For assemblies, we recommend using [ParSNP](http://harvest.readthedocs.org/) to align genomes to the CT18 reference. The resulting multi-sample VCF file(s) can be passed directly to this script via --vcf_parsnp.
 
+Dependencies: Python 2.7.5+ ([SAMtools](http://http://samtools.sourceforge.net/) and [BCFtools](https://samtools.github.io/bcftools/) are also required if you are working from BAM files)
+
 [Basic Usage](https://github.com/katholt/genotyphi/#basic-usage---own-bam-recommended-if-you-have-reads)
 
 [Options](https://github.com/katholt/genotyphi/#options)
 
 [Outputs](https://github.com/katholt/genotyphi/#outputs)
 
-[Generating inputs BAMS from reads (with example)](https://github.com/katholt/genotyphi/#generating-input-bams-from-reads)
+[Generating input BAMS from reads (with example)](https://github.com/katholt/genotyphi/#generating-input-bams-from-reads)
 
 [Generating input VCFs from assemblies (with example)](https://github.com/katholt/genotyphi/#generating-input-vcfs-from-assemblies)
 
 ## Basic Usage - own BAM (recommended if you have reads)
+
+Note the BAM files must be sorted (e.g. using samtools sort)
 
 ```
 python genotyphi.py --mode bam --bam *.bam --ref AL513382.fasta --output genotypes.txt
@@ -119,7 +123,7 @@ For example:
 wget ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA_000195995.1_ASM19599v1/GCA_000195995.1_ASM19599v1_genomic.fna.gz
 
 gunzip GCA_000195995.1_ASM19599v1_genomic.fna.gz
-mv GCA_000195995.1_ASM19599v1_genomic.fna AL513382.fasta
+mv GCA_000195995.1_ASM19599v1_genomic.fna CT18.fasta
 
 # Download reads for S. Typhi 8(04)N, isolated from Vietnam in 2004
 
@@ -130,7 +134,7 @@ wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR343/ERR343343/ERR343343_2.fastq.gz
 
 For example, to align paired end reads to the CT18 reference genome sequence:
 
-bowtie2-build AL513382.fasta CT18
+bowtie2-build CT18.fasta CT18
 
 bowtie2 -p 2 -x CT18 -1 ERR343343_1.fastq.gz -2 ERR343343_2.fastq.gz -S output.sam
  
