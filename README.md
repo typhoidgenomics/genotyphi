@@ -12,9 +12,9 @@ For assemblies, we recommend using [ParSNP](http://harvest.readthedocs.org/) to 
 
 [Outputs](https://github.com/katholt/genotyphi/#outputs)
 
-[Inputs](https://github.com/katholt/genotyphi/#using-bowtie2-to-genotype-from-bam-files) - if you have reads
+[Generating inputs BAMS from reads - example](https://github.com/katholt/genotyphi/#using-bowtie2-to-genotype-from-bam-files)
 
-[Inputs](https://github.com/katholt/genotyphi/#using-parsnp-to-genotype-from-genome-assemblies) - if you have assemblies
+[Generating input VCFs from assemblies - example](https://github.com/katholt/genotyphi/#using-parsnp-to-genotype-from-genome-assemblies)
 
 ## Basic Usage - own BAM (recommended if you have reads available)
 
@@ -107,7 +107,7 @@ As recombination is extremely rare in S. Typhi, it is unlikely that DNA isolated
 
 WARNING: Note the reference genome CT18 has the genotype 3.2.1. It is therefore possible that unexpected behaviour (e.g. wrong reference, unspecified reference name, or problems that results in overall poor quality SNP calls in the VCF) can sometimes result in calls of 3.2.1 ... so if you see lots of strains being assigned this genotype, it is worth investigating further.
 
-## Using Bowtie2 to genotype from bam files
+## Generating input BAMS from reads
 
 We recommend using [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) to align reads to the CT18 reference, and [SAMtools](http://http://samtools.sourceforge.net/) to convert the *.sam file to the *.bam format.  The resulting bam file(s) can be passed directly to this script via --bam.
 
@@ -149,7 +149,7 @@ File	Final_call	Final_call_support	Subclade	Clade	PrimaryClade	Support_Subclade	
 
 ```
 
-## Using ParSNP to genotype from genome assemblies
+## Generating input VCFs from assemblies
 
 We recommend using [ParSNP](http://harvest.readthedocs.org/) to align genomes to the CT18 reference. The resulting multi-sample VCF file(s) can be passed directly to this script via --vcf_parsnp.
 
