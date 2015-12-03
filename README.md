@@ -19,19 +19,19 @@ For assemblies, we recommend using [ParSNP](http://harvest.readthedocs.org/) to 
 ## Basic Usage - own BAM (recommended if you have reads)
 
 ```
-python genotyphi.py --mode bam --bam *.bam --ref AL513382.fasta
+python genotyphi.py --mode bam --bam *.bam --ref AL513382.fasta --output genotypes.txt
 ```
 
 ## Basic Usage - own VCF
 
 ```
-python genotyphi.py --mode vcf --vcf *.vcf --ref_id AL513382
+python genotyphi.py --mode vcf --vcf *.vcf --ref_id AL513382 --output genotypes.txt
 ```
 
 ## Basic Usage - assemblies aligned with ParSNP (recommended if you only have assembly data available and no reads)
 
 ```
-python genotyphi.py --mode vcf_parsnp --vcf parsnp.vcf
+python genotyphi.py --mode vcf_parsnp --vcf parsnp.vcf --output genotypes.txt
 ```
 
 ## Options
@@ -140,12 +140,15 @@ samtools sort unsorted_output.bam output
 
 # Call Typhi genotypes from the resulting BAM(s)
 
-python genotyphi.py --mode bam --bam output.bam --ref AL513382.fasta
+python genotyphi.py --mode bam --bam output.bam --ref AL513382.fasta --output genotypes_test.txt
 
-# Output: For bam output the column 'Number of SNPs called' reports the number of SNPs present in the resultant VCF file(s).
+```
 
-For example:
+#### Output
 
+For bam output the column 'Number of SNPs called' reports the number of SNPs present in the resultant VCF file(s).
+
+```
 File    Final_call  Final_call_support  Subclade    Clade   PrimaryClade    Support_Subclade    Support_Clade   Support_PrimaryClade    Number of SNPs called
 output.vcf      4.3     0.97            4.3     4               0.97    1.0     68
 
@@ -163,7 +166,7 @@ For example:
 wget ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA_000195995.1_ASM19599v1/GCA_000195995.1_ASM19599v1_genomic.fna.gz
 
 gunzip GCA_000195995.1_ASM19599v1_genomic.fna.gz
-mv GCA_000195995.1_ASM19599v1_genomic.fna AL513382.fasta
+mv GCA_000195995.1_ASM19599v1_genomic.fna CT18.fasta
 
 # Download two example Typhi genomes for genotyping
 
@@ -175,7 +178,7 @@ gunzip GCA_000007545.1_ASM754v1_genomic.fna.gz
 
 mkdir genomes/
 mv GCA_000245535.1_ASM24553v1_genomic.fna genomes/Pstx12.fasta
-mv GCA_000007545.1_ASM754v1_genomic.fna.gz genomes/Ty2.fasta
+mv GCA_000007545.1_ASM754v1_genomic.fna genomes/Ty2.fasta
 
 # Use ParSNP to generate variant calls (VCF) for these genomes against the CT18 reference sequence
 
@@ -183,11 +186,16 @@ parsnp -r CT18.fasta -d genomes/ -o output
 
 # Call Typhi genotypes from the resulting VCF
 
-python genotyphi.py --mode vcf_parsnp --vcf output/parsnp.vcf
+python genotyphi.py --mode vcf_parsnp --vcf output/parsnp.vcf --output genotypes_parsnptest.txt
 
-# Output: P-stx-12 should be called as clade 4.3 (otherwise known as H58), Ty2 should be called as clade 4.1. 
-# The 'A' in the Final_call_support indicates the genotype calls were made from assembled data, hence no read support information is available.
+```
+#### Output
 
+P-stx-12 should be called as clade 4.3 (otherwise known as H58), Ty2 should be called as clade 4.1. 
+
+The 'A' in the Final_call_support indicates the genotype calls were made from assembled data, hence no read support information is available.
+
+```
 File	Final_call	Final_call_support	Subclade	Clade	PrimaryClade	Support_Subclade	Support_Clade	Support_PrimaryClade
 Pstx12.fasta	4.3	A		4.3	4			
 Ty2.fasta	4.1	A		4.1	4	
