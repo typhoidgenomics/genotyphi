@@ -145,7 +145,8 @@ python genotyphi.py --mode bam --bam output.bam --ref AL513382.fasta
 
 For example:
 
-File	Final_call	Final_call_support	Subclade	Clade	PrimaryClade	Support_Subclade	Support_Clade	Support_PrimaryClade	Number of SNPs called
+File    Final_call  Final_call_support  Subclade    Clade   PrimaryClade    Support_Subclade    Support_Clade   Support_PrimaryClade    Number of SNPs called
+output.vcf      4.3     0.97            4.3     4               0.97    1.0     68
 
 ```
 
