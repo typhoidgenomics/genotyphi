@@ -7,37 +7,40 @@
 # Documentation - https://github.com/katholt/genotyphi
 #
 # Dependencies:
-#	 SAMtools and bcftools are required to genotype from BAMs.
+#	 SAMtools (v1.2) and bcftools (v1.2) are required to genotype from BAMs.
 #
-# Last modified - Dec 2nd, 2015
+# Last modified - Dec 3rd, 2015
 #
 
 from argparse import (ArgumentParser, FileType)
 import os, sys, re, collections, operator
 import gzip
 import logging
+import time
+import datetime
 from subprocess import call, check_output, CalledProcessError, STDOUT
 
 
 def parse_args():
 	"Parse the input arguments, use '-h' for help"
 	parser = ArgumentParser(description='VCF to Typhi genotypes')
+	parser.add_argument('--mode', required=False, 
+		help='Mode to run in based on input files (vcf, bam, or vcf_parsnp)')
 	parser.add_argument(
 		'--vcf_parsnp', nargs='+', type=str, required=False,
 		help='Multi-sample VCF file(s) to genotype (e.g. ParSNP output; Mapping MUST have been done using CT18 as a reference sequence)')
 	parser.add_argument(
 		'--vcf', nargs='+', type=str, required=False,
 		help='VCF file(s) to genotype (Mapping MUST have been done using CT18 as a reference sequence)')
-	parser.add_argument('--ref_id', type=str, required=True,
+	parser.add_argument('--bam', nargs='+', type=str, required=False,
+		help='BAM file(s) to genotype (Mapping MUST have been done using CT18 as a reference sequence)')
+	parser.add_argument('--ref_id', type=str, required=False, default='1',
 						help='Name of the reference in the VCF file (#CHROM column). Note that CT18 has genotype 3.2.1. If all your strains return this genotype, it is likely you have specified the name of the refrence sequence incorrectly; please check your VCFs.')
 	parser.add_argument('--phred', type=int, default=20,
 						help='Minimum phred quality to count a variant call vs CT18 as a true SNP (default 20)')
 	parser.add_argument('--min_prop', type=float, default=0.1,
 						help='Minimum proportion of reads required to call a SNP (default 0.1)')
-	parser.add_argument(
-		'--bam', nargs='+', type=str, required=False,
-		help='BAM file(s) to genotype (Mapping MUST have been done using CT18 as a reference sequence)')
-	parser.add_argument('--ref_fasta', type=str,
+	parser.add_argument('--ref', type=str,
 						help='Reference sequence in fasta format. Required if bam files provided.')
 	parser.add_argument('--output', type=str, default='genotypes.txt',
 						help='Location and name for output file.')
@@ -241,129 +244,142 @@ def run_command(command, **kwargs):
 # main function
 def main():
 	args = parse_args()
+		
+	if (((args.mode == 'vcf') and args.vcf and args.ref_id) or ((args.mode == 'bam') and args.bam and args.ref) or (args.mode == 'vcf_parsnp')):
+		
+		# Initialise output file and timestamp
+		timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('_%Y.%m.%d_%H:%M:%S')
+		output_file = open((args.output[:-4] + timestamp + args.output[-4:]), 'w')
 
-	# Initialise output file
-	output_file = open(args.output, 'w')
+		# GENERATE VCFS (1 per strain) FROM BAMS
 
-	# GENERATE VCFS (1 per strain) FROM BAMS
+		if args.bam:
+		
+			if args.ref:
+				#obtain ref_id from fasta file
+				with open(args.ref, 'r') as fasta_file:
+					reference_name = fasta_file.readline().rstrip()
+					args.ref_id = reference_name[1:]
+					
+			temp_bed_file = open(args.ref_id + '.bed', 'w')	 # create temporary bed file for samtools
+			vcfFiles = []
+			# coordinates in zero-base, half-open for bed file
+			ordered_loci = list(loci)
+			sorted(ordered_loci)
+			for locus in ordered_loci:
+				temp_bed_file.write(
+					args.ref_id + '\t' + str(locus - 1) + '\t' + str(locus) + '\n')	 # write bed file from matrix
+			temp_bed_file.close()  # close bedFile
 
-	if args.bam:
-		temp_bed_file = open(args.ref_id + '.bed', 'w')	 # create temporary bed file for samtools
-		vcfFiles = []
-		# coordinates in zero-base, half-open for bed file
-		ordered_loci = list(loci)
-		sorted(ordered_loci)
-		for locus in ordered_loci:
-			temp_bed_file.write(
-				args.ref_id + '\t' + str(locus - 1) + '\t' + str(locus) + '\n')	 # write bed file from matrix
-		temp_bed_file.close()  # close bedFile
+			run_command(['samtools', 'index', args.ref])	# index fasta file
 
-		run_command(['samtools', 'index', args.ref_fasta])	# index fasta file
-
-		for bam in args.bam:
-			print 'bam files supplied, indexing and generating vcf file for ' + bam
-			run_command([args.samtools_location + 'samtools', 'index', bam])
-			run_command(
-				[args.samtools_location + 'samtools', 'mpileup', '-q', str(args.phred), '-ugB', '-f', args.ref_fasta,
-				 '-l', temp_bed_file.name, bam, '-o', bam[:-4] + '.output', '-I'])
-			run_command(
-				[args.bcftools_location + 'bcftools', 'call', '-c', bam[:-4] + '.output', '-o', bam[:-4] + '.vcf'])
-			run_command(['rm', bam[:-4] + '.output'])
-			vcfFiles.append(bam[:-4] + '.vcf')	# supply generated vcf file to script
-		run_command(['rm', temp_bed_file.name])
-		args.vcf = vcfFiles
+			for bam in args.bam:
+				print 'bam files supplied, indexing and generating vcf file for ' + bam
+				run_command([args.samtools_location + 'samtools', 'index', bam])
+				run_command(
+					[args.samtools_location + 'samtools', 'mpileup', '-q', str(args.phred), '-ugB', '-f', args.ref,
+				 	'-l', temp_bed_file.name, bam, '-o', bam[:-4] + '.output', '-I'])
+				run_command(
+					[args.bcftools_location + 'bcftools', 'call', '-c', bam[:-4] + '.output', '-o', bam[:-4] + '.vcf'])
+				run_command(['rm', bam[:-4] + '.output'])
+				vcfFiles.append(bam[:-4] + '.vcf')	# supply generated vcf file to script
+			run_command(['rm', temp_bed_file.name])
+			args.vcf = vcfFiles
 
 
-	# PRINT OUTPUT HEADER
-	if args.bam:
-		output_file.write('\t'.join(
-			['File', 'Final_call', 'Final_call_support', 'Subclade', 'Clade', 'PrimaryClade', 'Support_Subclade',
-			 'Support_Clade', 'Support_PrimaryClade', 'Number of SNPs called\n']))
-	else:
-		output_file.write('\t'.join(
-			['File', 'Final_call', 'Final_call_support', 'Subclade', 'Clade', 'PrimaryClade', 'Support_Subclade',
-			 'Support_Clade', 'Support_PrimaryClade\n']))
+		# PRINT OUTPUT HEADER
+		if args.bam:
+			output_file.write('\t'.join(
+				['File', 'Final_call', 'Final_call_support', 'Subclade', 'Clade', 'PrimaryClade', 'Support_Subclade',
+				 'Support_Clade', 'Support_PrimaryClade', 'Number of SNPs called\n']))
+		else:
+			output_file.write('\t'.join(
+				['File', 'Final_call', 'Final_call_support', 'Subclade', 'Clade', 'PrimaryClade', 'Support_Subclade',
+				 'Support_Clade', 'Support_PrimaryClade\n']))
+				 
 
-	# PARSE MAPPING BASED VCFS (1 per strain)
+		# PARSE MAPPING BASED VCFS (1 per strain)
 
-	if args.vcf:
-		for vcf in args.vcf:
-			snp_count = 0
-			this_groups = []  # list of groups identified by defining SNPs
-			proportions = {}  # proportion of reads supporting each defining SNP; key = group, value = proportion
+		if args.vcf:
+			for vcf in args.vcf:
+				snp_count = 0
+				this_groups = []  # list of groups identified by defining SNPs
+				proportions = {}  # proportion of reads supporting each defining SNP; key = group, value = proportion
 
-			# read file
-			(file_name, ext) = os.path.splitext(vcf)
+				# read file
+				(file_name, ext) = os.path.splitext(vcf)
 
-			if ext == '.gz':
-				f = gzip.open(vcf, 'r')
-			else:
-				f = open(vcf, 'r')
-
-			any_ref_line = 0
-
-			for line in f:
-				if not line.startswith('#'):
-					x = line.rstrip().split()
-					if not line.strip() == '':
-						snp_count = snp_count + 1
-					if x[0] == args.ref_id:
-						# parse this SNP line
-						any_ref_line = 1
-						(this_groups, proportions) = checkSNP(x, this_groups, proportions, args)
-
-			f.close()
-
-			if any_ref_line > 0:
-				info = parseGeno(this_groups, proportions)
-				if args.bam:
-					output_file.write(vcf + '\t' + info + '\t' + str(snp_count) + '\n')
+				if ext == '.gz':
+					f = gzip.open(vcf, 'r')
 				else:
-					output_file.write(vcf + '\t' + info + '\n')
-			else:
-				output_file.write(
-					vcf + '\tNo SNPs encountered against expected reference. Wrong reference or no SNP calls?\n')
+					f = open(vcf, 'r')
 
-	# PARSE PARSNP VCF (multiple strains)
+				any_ref_line = 0
 
-	if args.vcf_parsnp:
+				for line in f:
+					if not line.startswith('#'):
+						x = line.rstrip().split()
+						if not line.strip() == '':
+							snp_count = snp_count + 1
+						if x[0] == args.ref_id:
+							# parse this SNP line
+							any_ref_line = 1
+							(this_groups, proportions) = checkSNP(x, this_groups, proportions, args)
 
-		for vcfm in args.vcf_parsnp:
+				f.close()
 
-			# read file
-			(file_name, ext) = os.path.splitext(vcfm)
+				if any_ref_line > 0:
+					info = parseGeno(this_groups, proportions)
+					if args.bam:
+						output_file.write(vcf + '\t' + info + '\t' + str(snp_count) + '\n')
+					else:
+						output_file.write(vcf + '\t' + info + '\n')
+				else:
+					output_file.write(
+						vcf + '\tNo SNPs encountered against expected reference. Wrong reference or no SNP calls?\n')
 
-			if ext == '.gz':
-				f = gzip.open(vcfm, 'r')
-			else:
-				f = open(vcfm, 'r')
+		# PARSE PARSNP VCF (multiple strains)
 
-			any_ref_line = 0
+		if args.vcf_parsnp:
 
-			this_groups = {}  # list of groups identified by defining SNPs, key = strain id (column number)
-			strains = []
+			for vcfm in args.vcf_parsnp:
 
-			for line in f:
-				x = line.rstrip().split()
-				if x[0] == '#CHROM':
-					strains = x[10:]
-				if not line.startswith('#'):
-					if x[0] == args.ref_id:
-						any_ref_line = 1  # parse this SNP line
-						this_groups = checkSNPmulti(x, this_groups, args)
+				# read file
+				(file_name, ext) = os.path.splitext(vcfm)
 
-			f.close()
+				if ext == '.gz':
+					f = gzip.open(vcfm, 'r')
+				else:
+					f = open(vcfm, 'r')
 
-			# collate by strain
-			if any_ref_line > 0:
-				for strain in this_groups:
-					info = parseGeno(this_groups[strain], ['A'])
-					output_file.write(strains[strain] + '\t' + info + '\n')
-			else:
-				output_file.write(strains[
-									  strain] + '\tNo SNPs encountered against expected reference. Wrong reference or no SNP calls?\n')
+				any_ref_line = 0
 
-	output_file.close()
+				this_groups = {}  # list of groups identified by defining SNPs, key = strain id (column number)
+				strains = []
+
+				for line in f:
+					x = line.rstrip().split()
+					if x[0] == '#CHROM':
+						strains = x[10:]
+					if not line.startswith('#'):
+						if x[0] == args.ref_id:
+							any_ref_line = 1  # parse this SNP line
+							this_groups = checkSNPmulti(x, this_groups, args)
+
+				f.close()
+
+				# collate by strain
+				if any_ref_line > 0:
+					for strain in this_groups:
+						info = parseGeno(this_groups[strain], ['A'])
+						output_file.write(strains[strain] + '\t' + info + '\n')
+				else:
+					output_file.write(strains[
+						strain] + '\tNo SNPs encountered against expected reference. Wrong reference or no SNP calls?\n')
+
+		output_file.close()
+	else:
+		print 'Missing or incomplete input parameters, please check these and try again.'
 
 # call main function
 if __name__ == '__main__':
