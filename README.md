@@ -12,9 +12,9 @@ For assemblies, we recommend using [ParSNP](http://harvest.readthedocs.org/) to 
 
 [Outputs](https://github.com/katholt/genotyphi/#outputs)
 
-[Generating inputs BAMS from reads (with example)](https://github.com/katholt/genotyphi/#using-bowtie2-to-genotype-from-bam-files)
+[Generating inputs BAMS from reads (with example)](https://github.com/katholt/genotyphi/#generating-input-bams-from-reads)
 
-[Generating input VCFs from assemblies (with example)](https://github.com/katholt/genotyphi/#using-parsnp-to-genotype-from-genome-assemblies)
+[Generating input VCFs from assemblies (with example)](https://github.com/katholt/genotyphi/#generating-input-vcfs-from-assemblies)
 
 ## Basic Usage - own BAM (recommended if you have reads)
 
