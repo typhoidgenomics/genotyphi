@@ -9,7 +9,7 @@
 # Dependencies:
 #	 SAMtools (v1.2) and bcftools (v1.2) are required to genotype from BAMs.
 #
-# Last modified - Dec 3rd, 2015
+# Last modified - Dec 7th, 2015
 #
 
 from argparse import (ArgumentParser, FileType)
@@ -219,7 +219,7 @@ def parseGeno(this_groups, proportions):
 	return info
 
 
-# Exception to raise if the command we try to run fails for some reason
+# exception to raise if the command we try to run fails for some reason
 class CommandError(Exception):
 	pass
 
@@ -242,7 +242,7 @@ def run_command(command, **kwargs):
 def main():
 	args = parse_args()
 		
-	if (((args.mode == 'vcf') and args.vcf and args.ref_id) or ((args.mode == 'bam') and args.bam and args.ref) or ((args.mode == 'vcf_parsnp') and args.vcf)):
+	if (((args.mode == 'vcf') and args.vcf and args.ref_id) or ((args.mode == 'bam') and args.bam and args.ref and args.ref_id) or ((args.mode == 'vcf_parsnp') and args.vcf)):
 		
 		# Initialise output file and timestamp
 		timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('_%Y.%m.%d_%H:%M:%S')
@@ -255,11 +255,17 @@ def main():
 			if args.ref:
 				#obtain ref_id from fasta file
 				with open(args.ref, 'r') as fasta_file:
-					reference_name = fasta_file.readline().rstrip()
-					args.ref_id = reference_name[1:]
+					lines = fasta_file.readlines()
+				if args.ref_id in lines[0]:	
+					lines[0] = '>' + args.ref_id + '\n'
+				
+				with open('temp_reference.fasta', 'w') as temp_fasta_file:
+					for line in lines:
+						temp_fasta_file.write(line)
 					
 			temp_bed_file = open(args.ref_id + '.bed', 'w')	 # create temporary bed file for samtools
 			vcfFiles = []
+			
 			# coordinates in zero-base, half-open for bed file
 			ordered_loci = list(loci)
 			sorted(ordered_loci)
@@ -268,19 +274,21 @@ def main():
 					args.ref_id + '\t' + str(locus - 1) + '\t' + str(locus) + '\n')	 # write bed file from matrix
 			temp_bed_file.close()  # close bedFile
 
-			run_command(['samtools', 'index', args.ref])	# index fasta file
+			run_command(['samtools', 'index', 'temp_reference.fasta'])	# index fasta file
 
 			for bam in args.bam:
 				print 'bam files supplied, indexing and generating vcf file for ' + bam
 				run_command([args.samtools_location + 'samtools', 'index', bam])
 				run_command(
-					[args.samtools_location + 'samtools', 'mpileup', '-q', str(args.phred), '-ugB', '-f', args.ref,
-				 	'-l', temp_bed_file.name, bam, '-o', bam[:-4] + '.output', '-I'])
+					[args.samtools_location + 'samtools', 'mpileup', '-q', str(args.phred), '-ugB', '-f', 'temp_reference.fasta',
+				 	'-l', args.ref_id + '.bed', bam, '-o', bam[:-4] + '.output', '-I'])
 				run_command(
 					[args.bcftools_location + 'bcftools', 'call', '-c', bam[:-4] + '.output', '-o', bam[:-4] + '.vcf'])
 				run_command(['rm', bam[:-4] + '.output'])
+				run_command(['rm', 'temp_reference.fasta'])
+				run_command(['rm', 'temp_reference.fasta.fai'])
 				vcfFiles.append(bam[:-4] + '.vcf')	# supply generated vcf file to script
-			run_command(['rm', temp_bed_file.name])
+			#run_command(['rm', temp_bed_file.name])
 			args.vcf = vcfFiles
 
 
