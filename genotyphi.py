@@ -9,7 +9,7 @@
 # Dependencies:
 #	 SAMtools (v1.2) and bcftools (v1.2) are required to genotype from BAMs.
 #
-# Last modified - Dec 3rd, 2015
+# Last modified - Dec 7th, 2015
 #
 
 from argparse import (ArgumentParser, FileType)
@@ -32,7 +32,7 @@ def parse_args():
 	parser.add_argument('--bam', nargs='+', type=str, required=False,
 		help='BAM file(s) to genotype (Mapping MUST have been done using CT18 as a reference sequence)')
 	parser.add_argument('--ref_id', type=str, required=False, default='1',
-						help='Name of the reference in the VCF file (#CHROM column). Note that CT18 has genotype 3.2.1. If all your strains return this genotype, it is likely you have specified the name of the refrence sequence incorrectly; please check your VCFs.')
+						help='Name of the reference in the VCF file (#CHROM column) or fasta file. Note that CT18 has genotype 3.2.1. If all your strains return this genotype, it is likely you have specified the name of the refrence sequence incorrectly; please check your VCFs.')
 	parser.add_argument('--phred', type=int, default=20,
 						help='Minimum phred quality to count a variant call vs CT18 as a true SNP (default 20)')
 	parser.add_argument('--min_prop', type=float, default=0.1,
@@ -219,7 +219,7 @@ def parseGeno(this_groups, proportions):
 	return info
 
 
-# Exception to raise if the command we try to run fails for some reason
+# exception to raise if the command we try to run fails for some reason
 class CommandError(Exception):
 	pass
 
@@ -242,24 +242,34 @@ def run_command(command, **kwargs):
 def main():
 	args = parse_args()
 		
-	if (((args.mode == 'vcf') and args.vcf and args.ref_id) or ((args.mode == 'bam') and args.bam and args.ref) or ((args.mode == 'vcf_parsnp') and args.vcf)):
+	if (((args.mode == 'vcf') and args.vcf and args.ref_id) or ((args.mode == 'bam') and args.bam and args.ref and args.ref_id) or ((args.mode == 'vcf_parsnp') and args.vcf)):
 		
 		# Initialise output file and timestamp
 		timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('_%Y.%m.%d_%H:%M:%S')
-		output_file = open((args.output[:-4] + timestamp + args.output[-4:]), 'w')
+		if '.' in args.output:
+			output_filename = (args.output).split('.')
+			output_file = open((output_filename[0] + timestamp + '.' + output_filename[1]), 'w')
+		else:
+			output_file = open(args.output + timestamp + '.txt', 'w')
 
 		# GENERATE VCFS (1 per strain) FROM BAMS
 
 		if args.mode == 'bam':
 		
 			if args.ref:
-				#obtain ref_id from fasta file
-				with open(args.ref, 'r') as fasta_file:
-					reference_name = fasta_file.readline().rstrip()
-					args.ref_id = reference_name[1:]
+				with open(args.ref, 'r') as fasta_file: # create SAMtools compatible fasta file
+					sequences = fasta_file.read()
+					for sequence in sequences.split('>'):
+						if args.ref_id in sequence:	
+							new_header = '>' + args.ref_id
+							replacement_index = sequence.find('\n')
+							sequence = new_header + sequence[replacement_index:]
+							with open('temp_reference.fasta', 'w') as temp_fasta_file: 
+								temp_fasta_file.write(sequence)
 					
 			temp_bed_file = open(args.ref_id + '.bed', 'w')	 # create temporary bed file for samtools
 			vcfFiles = []
+			
 			# coordinates in zero-base, half-open for bed file
 			ordered_loci = list(loci)
 			sorted(ordered_loci)
@@ -268,24 +278,29 @@ def main():
 					args.ref_id + '\t' + str(locus - 1) + '\t' + str(locus) + '\n')	 # write bed file from matrix
 			temp_bed_file.close()  # close bedFile
 
-			run_command(['samtools', 'index', args.ref])	# index fasta file
+			run_command(['samtools', 'index', temp_fasta_file.name])	# index fasta file
 
 			for bam in args.bam:
 				print 'bam files supplied, indexing and generating vcf file for ' + bam
-				run_command([args.samtools_location + 'samtools', 'index', bam])
+				run_command([args.samtools_location + 'samtools', 'index', bam]) # index bam files
 				run_command(
-					[args.samtools_location + 'samtools', 'mpileup', '-q', str(args.phred), '-ugB', '-f', args.ref,
-				 	'-l', temp_bed_file.name, bam, '-o', bam[:-4] + '.output', '-I'])
+					[args.samtools_location + 'samtools', 'mpileup', '-q', str(args.phred), '-ugB', '-f', temp_fasta_file.name,
+				 	'-l', args.ref_id + '.bed', bam, '-o', bam[:-4] + '.output', '-I']) # detect SNPs
 				run_command(
-					[args.bcftools_location + 'bcftools', 'call', '-c', bam[:-4] + '.output', '-o', bam[:-4] + '.vcf'])
+					[args.bcftools_location + 'bcftools', 'call', '-c', bam[:-4] + '.output', '-o', bam[:-4] + '.vcf']) # generate vcf files
 				run_command(['rm', bam[:-4] + '.output'])
 				vcfFiles.append(bam[:-4] + '.vcf')	# supply generated vcf file to script
-			run_command(['rm', temp_bed_file.name])
+				
+			run_command(['rm', temp_bed_file.name]) # remove temp files
+			run_command(['rm', temp_fasta_file.name])
+			run_command(['rm', temp_fasta_file.name + '.fai'])
+			
 			args.vcf = vcfFiles
 
 
 		# PRINT OUTPUT HEADER
-		if args.bam:
+		
+		if args.mode == 'bam':
 			output_file.write('\t'.join(
 				['File', 'Final_call', 'Final_call_support', 'Subclade', 'Clade', 'PrimaryClade', 'Support_Subclade',
 				 'Support_Clade', 'Support_PrimaryClade', 'Number of SNPs called\n']))
