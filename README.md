@@ -142,6 +142,8 @@ samtools view -bS output.sam > unsorted_output.bam
 
 samtools sort unsorted_output.bam output
 
+(or, 'samtools sort unsorted_output.bam > output.bam' for SAMtools v1.3.1)
+
 # Call Typhi genotypes from the resulting BAM(s)
 
 python genotyphi.py --mode bam --bam output.bam --ref CT18.fasta --ref_id AL513382.1 --output genotypes_test.txt
