@@ -9,7 +9,7 @@
 # Dependencies:
 #	 SAMtools (v1.2) and bcftools (v1.2) are required to genotype from BAMs.
 #
-# Last modified - Dec 21st, 2015
+# Last modified - Jun 7th, 2016
 #
 
 from argparse import (ArgumentParser, FileType)
@@ -274,7 +274,7 @@ def main():
 					args.ref_id + '\t' + str(locus - 1) + '\t' + str(locus) + '\n')	 # write bed file from matrix
 			temp_bed_file.close()  # close bedFile
 
-			run_command(['samtools', 'index', 'temp_reference.fasta'])	# index fasta file
+			run_command(['samtools', 'faidx', 'temp_reference.fasta'])	# index fasta file
 
 			for bam in args.bam:
 				print 'bam files supplied, generating vcf file for ' + bam
