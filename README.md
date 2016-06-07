@@ -6,7 +6,7 @@ For short read data, we recommend using the raw alignments (BAM files) as input 
 
 For assemblies, we recommend using [ParSNP](http://harvest.readthedocs.org/) to align genomes to the CT18 reference. The resulting multi-sample VCF file(s) can be passed directly to this script via --vcf_parsnp.
 
-Dependencies: Python 2.7.5+ ([SAMtools](http://http://samtools.sourceforge.net/) and [BCFtools](https://samtools.github.io/bcftools/) are also required if you are working from BAM files)
+Dependencies: Python 2.7.5+ ([SAMtools](http://http://samtools.sourceforge.net/) and [BCFtools](https://samtools.github.io/bcftools/) are also required if you are working from BAM files.  Genotyphi has been tested with versions 1.1, 1.2, and 1.3 of both SAMtools and bcftools, subsequently we advise using the same version of both of these dependencies together i.e. SAMtools v1.2 and bcftools v1.2).
 
 [Basic Usage](https://github.com/katholt/genotyphi/#basic-usage---own-bam-recommended-if-you-have-reads)
 
@@ -113,7 +113,7 @@ WARNING: Note the reference genome CT18 has the genotype 3.2.1. It is therefore 
 
 ## Generating input BAMS from reads
 
-We recommend using [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) to align reads to the CT18 reference, and [SAMtools](http://http://samtools.sourceforge.net/) to convert the *.sam file to the *.bam format.  The resulting bam file(s) can be passed directly to this script via --bam.
+We recommend using [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) to align reads to the CT18 reference, and [SAMtools](http://http://samtools.sourceforge.net/) to convert the *.sam file to the *.bam format.  The resulting bam file(s) can be passed directly to this script via --bam.  Please note the differences in the commands listed below when using SAMtools v1.1/1.2 vs. SAMtools v1.3.1 to generate bam files.
 
 For example:
 
@@ -142,7 +142,7 @@ samtools view -bS output.sam > unsorted_output.bam
 
 samtools sort unsorted_output.bam output
 
-(or, 'samtools sort unsorted_output.bam > output.bam' for SAMtools v1.3.1)
+(or, 'samtools sort unsorted_output.bam > output.bam' for SAMtools v1.3.1 instead of SAMtools v1.2/1.1)
 
 # Call Typhi genotypes from the resulting BAM(s)
 
