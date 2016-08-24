@@ -71,7 +71,9 @@ def checkSNP(vcf_line_split, this_groups, proportions, args):
 	snp = int(vcf_line_split[1])
 	if snp in loci:
 		i = loci.index(snp)
+		
 		if float(vcf_line_split[5]) > args.phred:
+			print vcf_line_split
 			m = re.search("DP4=(\d+),(\d+),(\d+),(\d+)", vcf_line_split[7])
 			if m != None:
 				alt_read_count = int(m.group(3)) + int(m.group(4))
@@ -81,7 +83,17 @@ def checkSNP(vcf_line_split, this_groups, proportions, args):
 				else:
 					snp_proportion = float(alt_read_count) / total_read_count
 			else:
-				snp_proportion = float(-1)	# set unknowns to negative so that we know this is not a real proportion
+				if vcf_line_split[4] != '.': # if the ALT is not '.' i.e. if the alt is not same as ref
+					try:
+						ad = vcf_line_split[9].split(':')[1].split(',') # get the AD ratio
+						alt_read_count = int(ad[1])
+						total_read_count = int(ad[0]) + alt_read_count
+						snp_proportion = float(alt_read_count) / total_read_count
+					except IndexError:
+						snp_proportion = float(-1)
+
+				else:
+					snp_proportion = float(-1)	# set unknowns to negative so that we know this is not a real proportion
 			if snp_proportion > args.min_prop:
 				this_allele = vcf_line_split[4]
 				if this_allele == snp_alleles[i]:
@@ -380,6 +392,7 @@ def main():
 						if x[0] == args.ref_id:
 							any_ref_line = 1  # parse this SNP line
 							this_groups = checkSNPmulti(x, this_groups, args)
+
 
 				f.close()
 
