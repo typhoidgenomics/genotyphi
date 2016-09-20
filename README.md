@@ -23,7 +23,7 @@ Dependencies: Python 2.7.5+ ([SAMtools](http://samtools.sourceforge.net/) and [B
 Note the BAM files must be sorted (e.g. using samtools sort)
 
 ```
-python genotyphi.py --mode bam --bam *.bam --ref AL513382.fasta --output genotypes.txt
+python genotyphi.py --mode bam --bam *.bam --ref AL513382.fasta --ref_id AL513382.1 --output genotypes.txt
 ```
 
 ## Basic Usage - own VCF
