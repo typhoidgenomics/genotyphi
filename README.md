@@ -1,6 +1,6 @@
 # genotyphi
 
-This script assigns genotypes to Salmonella Typhi genomes. The genotyping scheme is described in this paper (please cite if you use this method): ["An extended genotyping framework for Salmonella enterica serovar Typhi, the cause of human typhoid", Wong et al, 2016, Nature Communications](http://www.nature.com/articles/ncomms12827/). It is also summarised in [this blog post](https://holtlab.net/2016/10/12/global-picture-typhoid/).
+This script assigns genotypes to *Salmonella* Typhi genomes and detectes known mutations i the quinolone-resistance determining region (QRDR) of genes *gyrA* and *parC*. The genotyping scheme is described in this paper : ["An extended genotyping framework for Salmonella enterica serovar Typhi, the cause of human typhoid", Wong et al, 2016, Nature Communications](http://www.nature.com/articles/ncomms12827/), and an updated version of the code that detects QRDR mutations, and genotype H58 lineages 4.3.1.1 and 4.3.1.2 was used in this preprint ["Laboratory and Molecular Surveillance of Paediatric Typhoidal Salmonella in Nepal: Antimicrobial Resistance and Implications for Vaccine Policy", Britto et al 2018, bioRxiv] (https://www.biorxiv.org/content/early/2018/01/18/250142) (please cite both papers if you use this method). The genotyping method is also summarised in [this blog post](https://holtlab.net/2016/10/12/global-picture-typhoid/).
 
 Inputs are BAM or VCF files (mapped to the Typhi CT18 reference genome, [AL513382.1](https://www.ncbi.nlm.nih.gov/nuccore/AL513382.1)).
 
@@ -101,7 +101,7 @@ Requires [SAMtools](http://samtools.sourceforge.net/) and [BCFtools](https://sam
 
 Output is to standard out, in tab delimited format.
 
-The script works by looking for SNPs that define three nested levels of phylogenetic lineages for S. Typhi: primary clusters, clades and subclades. These are named in the form 1.2.3, which indicates primary cluster 1, clade 1.2, and subclade 1.2.3.
+The script works by looking for SNPs that define nested levels of phylogenetic lineages for S. Typhi: primary clusters, clades and subclades. These are named in the form 1.2.3, which indicates primary cluster 1, clade 1.2, and subclade 1.2.3.  For H58 the script will call lineages 1 and 2 as 4.3.1.1 and 4.3.1.2.
 
 All genotypes implicated by the detected SNPs will be reported (comma separated if multiple are found). 
 
@@ -157,8 +157,8 @@ python genotyphi.py --mode bam --bam output.bam --ref CT18.fasta --ref_id AL5133
 For bam output the column 'Number of SNPs called' reports the number of SNPs present in the resultant VCF file(s).
 
 ```
-File    Final_call  Final_call_support  Subclade    Clade   PrimaryClade    Support_Subclade    Support_Clade   Support_PrimaryClade    Number of SNPs called
-output.vcf      4.3     0.97            4.3     4               0.97    1.0     68
+File	Final_call	Final_call_support	Subclade	Clade	PrimaryClade	Support_Subclade	Support_Clade	Support_PrimaryClade	Number of SNPs called	QRDR mutations
+output.vcf	4.3.1.2	1.0	4.3.1.2		4	1.0		1.0	77	 gyrA-D87G
 
 ```
 
