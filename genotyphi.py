@@ -2,14 +2,14 @@
 #
 # Input BAM (recommended) or VCF (if highly trusted SNP data) relative to Typhi CT18 (AL513382) and assign Typhi genotype codes and detect QRDR mutations.
 #
-# Authors - Kat Holt (kholt@unimelb.edu.au), Zoe Dyson (zoe.dyson@unimelb.edu.au)
+# Authors - Kat Holt (kholt@unimelb.edu.au), Zoe Dyson (zad24@medschl.cam.ac.uk)
 #
 # Documentation - https://github.com/katholt/genotyphi
 #
 # Dependencies:
 #	 SAMtools (v1.2) and bcftools (v1.2) are required to genotype from BAMs.
 #
-# Last modified - Feb 1st, 2018
+# Last modified - Nov 8th, 2018
 #
 
 from argparse import (ArgumentParser, FileType)
@@ -54,17 +54,17 @@ loci = [655112, 773487, 1804415, 1840727, 3640678, 270120, 102135, 316489, 41053
 		4094437, 827036, 3476114, 4355243, 2723847, 4388609, 703762, 431216, 3095443, 316186, 1934711, 2811222, 3092900,
 		2723724, 3437570, 1780319, 1535365, 1792810, 3062270, 1799842, 432732, 3069182, 2732615, 3770391, 2269835,
 		4215341, 4602946, 3368641, 2245432, 3164162, 3923165, 1811809, 3729635, 3817752, 183033, 1615350, 2342045,
-		3996717, 2640029, 989024, 3806278, 1611156, 2348902, 1193220, 3694947]
+		3996717, 2640029, 989024, 3806278, 1611156, 2348902, 1193220, 3694947, 955875]
 snp_alleles = ['T', 'A', 'C', 'A', 'A', 'T', 'A', 'C', 'T', 'A', 'T', 'T', 'A', 'T', 'T', 'G', 'G', 'A', 'A', 'A', 'T',
 			   'A', 'T', 'A', 'A', 'A', 'A', 'T', 'C', 'A', 'C', 'A', 'A', 'A', 'T', 'T', 'T', 'T', 'G', 'C', 'A', 'T',
 			   'T', 'C', 'C', 'T', 'G', 'A', 'T', 'G', 'C', 'T', 'T', 'A', 'A', 'A', 'T', 'T', 'T', 'T', 'T', 'A', 'T',
-			   'A', 'T', 'A', 'A', 'T', 'C', 'G']
+			   'A', 'T', 'A', 'A', 'T', 'C', 'G', 'A' ]
 groups = ['0.1', '0.0.1', '0.0.2', '0.0.3', '0.1.1', '0.1.2', '0.1.3', '1', '1.1', '1.1.1', '1.1.2', '1.1.3', '1.1.4',
 		  '1.2', '1.2.1', '2', '2.0.1', '2.0.2', '2.1', '2.1.1', '2.1.2', '2.1.3', '2.1.4', '2.1.5', '2.1.6', '2.1.7',
 		  '2.1.8', '2.1.9', '2.2', '2.2.1', '2.2.2', '2.2.3', '2.2.4', '2.3', '2.3.1', '2.3.2', '2.3.3', '2.3.4',
 		  '2.3.5', '2.4', '2.4.1', '2.5', '2.5.1', '3', '3.0.1', '3.0.2', '3.1', '3.1.1', '3.1.2', '3.2', '3.2.1',
 		  '3.2.2', '3.3', '3.3.1', '3.4', '3.5', '3.5.1', '3.5.2', '3.5.3', '3.5.4', '4', '4.1', '4.1.1', '4.2',
-		  '4.2.1', '4.2.2', '4.2.3', '4.3.1', '4.3.1.1', '4.3.1.2']
+		  '4.2.1', '4.2.2', '4.2.3', '4.3.1', '4.3.1.1', '4.3.1.2', '4.3.1.1.P1']
 
 ### QRDR SNP definitions
 
@@ -166,6 +166,8 @@ def parseGeno(this_groups, proportions):
 	primary = []
 	for group in this_groups:
 		level = len(group.split("."))
+                if level == 5:
+                        subclades.append(group)
 		if level == 4:
 			subclades.append(group)
 		if level == 3:
@@ -175,11 +177,15 @@ def parseGeno(this_groups, proportions):
 		elif level == 1:
 			primary.append(group)
 
-	# fix 4.3.1/4.3.1.1/4.3.1.2 nesting
+	# fix 4.3.1/4.3.1.1/4.3.1.2/4.3.1.P1 nesting
 	if ('4.3.1.1' in subclades) and ('4.3.1' in subclades):
 		subclades.remove('4.3.1')
 	if('4.3.1.2' in subclades) and ('4.3.1' in subclades):
 		subclades.remove('4.3.1')
+        if('4.3.1.1.P1' in subclades) and ('4.3.1' in subclades):
+                subclades.remove('4.3.1')
+        if('4.3.1.1.P1' in subclades) and ('4.3.1.1' in subclades):
+                subclades.remove('4.3.1.1')
 
 	# fix 2.3, 2.2 nesting
 	if ('2.2' in clades) and ('2.3' in clades):
