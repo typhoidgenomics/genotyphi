@@ -120,12 +120,23 @@ We recommend using [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.sht
 For example:
 
 ```
-# Download CT18 (AL513382) reference genome
+# Download CT18 (AL513382) and unzip the CT18 reference genome
 
-wget ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA_000195995.1_ASM19599v1/GCA_000195995.1_ASM19599v1_genomic.fna.gz
+wget -O CT18.fasta.gz ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/195/995/GCF_000195995.1_ASM19599v1/GCF_000195995.1_ASM19599v1_genomic.fna.gz 
 
-gunzip GCA_000195995.1_ASM19599v1_genomic.fna.gz
-mv GCA_000195995.1_ASM19599v1_genomic.fna CT18.fasta
+gunzip CT18.fasta.gz
+
+# Separate the chromosome sequence from the plasmids with the emboss toolkit
+seqretsplit CT18.fasta
+
+mv nc_003198.1.fasta CT18.fasta
+
+# Replace the header line of the CT18.fasta file with the reference id i.e. chage
+
+>NC_003198.1 Salmonella enterica subsp. enterica serovar Typhi str. CT18, complete genome
+
+# to
+> AL513382.1
 
 # Download reads for S. Typhi 8(04)N, isolated from Vietnam in 2004
 
