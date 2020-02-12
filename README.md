@@ -187,6 +187,10 @@ wget ftp://ftp.ncbi.nlm.nih.gov/genomes/genbank/bacteria/Salmonella_enterica/ref
 gunzip GCA_000195995.1_ASM19599v1_genomic.fna.gz
 mv GCA_000195995.1_ASM19599v1_genomic.fna CT18.fasta
 
+# Separate CT18 chromosome with emboss
+seqretsplit GCA_000195995.1_ASM19599v1_genomic.fna
+mv al513382.1.fasta CT18.fasta
+
 # Download two example Typhi genomes for genotyping
 
 wget ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/245/535/GCA_000245535.1_ASM24553v1/GCA_000245535.1_ASM24553v1_genomic.fna.gz
@@ -206,7 +210,7 @@ harvesttools -i ./output/parsnp.ggr -V parsnp.vcf
 
 # Call Typhi genotypes from the resulting VCF
 
-python genotyphi.py --mode vcf_parsnp --vcf parsnp.vcf --output genotypes_parsnptest.txt
+python genotyphi.py --mode vcf_parsnp --vcf parsnp.vcf --ref_id AL513382.1 --output genotypes_parsnptest.txt
 
 ```
 #### Output
