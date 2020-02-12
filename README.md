@@ -190,7 +190,7 @@ mv GCA_000195995.1_ASM19599v1_genomic.fna CT18.fasta
 # Download two example Typhi genomes for genotyping
 
 wget ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/245/535/GCA_000245535.1_ASM24553v1/GCA_000245535.1_ASM24553v1_genomic.fna.gz
-wget ftp://ftp.ncbi.nih.gov/genomes/genbank/bacteria/Salmonella_enterica/latest_assembly_versions/GCA_000007545.1_ASM754v1/GCA_000007545.1_ASM754v1_genomic.fna.gz
+wget ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/007/545/GCA_000007545.1_ASM754v1/GCA_000007545.1_ASM754v1_genomic.fna.gz
 
 gunzip GCA_000245535.1_ASM24553v1_genomic.fna.gz
 gunzip GCA_000007545.1_ASM754v1_genomic.fna.gz
