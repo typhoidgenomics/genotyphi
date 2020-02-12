@@ -185,7 +185,6 @@ For example:
 wget ftp://ftp.ncbi.nlm.nih.gov/genomes/genbank/bacteria/Salmonella_enterica/reference/GCA_000195995.1_ASM19599v1/GCA_000195995.1_ASM19599v1_genomic.fna.gz
 
 gunzip GCA_000195995.1_ASM19599v1_genomic.fna.gz
-mv GCA_000195995.1_ASM19599v1_genomic.fna CT18.fasta
 
 # Separate CT18 chromosome with emboss
 seqretsplit GCA_000195995.1_ASM19599v1_genomic.fna
