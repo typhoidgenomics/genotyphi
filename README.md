@@ -122,7 +122,7 @@ For example:
 ```
 # Download CT18 (AL513382) and unzip the CT18 reference genome
 
-wget -O CT18.fasta.gz ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/195/995/GCF_000195995.1_ASM19599v1/GCF_000195995.1_ASM19599v1_genomic.fna.gz 
+wget -O CT18.fasta.gz ftp://ftp.ncbi.nlm.nih.gov/genomes/genbank/bacteria/Salmonella_enterica/reference/GCA_000195995.1_ASM19599v1/GCA_000195995.1_ASM19599v1_genomic.fna.gz
 
 gunzip CT18.fasta.gz
 
