@@ -202,7 +202,7 @@ mv GCA_000007545.1_ASM754v1_genomic.fna genomes/Ty2.fasta
 # Use ParSNP and Harvest tools to generate variant calls (VCF) for these genomes against the CT18 reference sequence
 
 parsnp -r CT18.fasta -d genomes/ -o output
-harvesttools -i parsnp.ggr -V parsnp.vcf
+harvesttools -i ./output/parsnp.ggr -V parsnp.vcf
 
 # Call Typhi genotypes from the resulting VCF
 
