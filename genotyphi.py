@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Input BAM (recommended) or VCF (if highly trusted SNP data) relative to Typhi CT18 (AL513382) and assign Typhi genotype codes and detect QRDR mutations.
+# Input BAM (recommended) or VCF (if highly trusted SNP data) relative to Typhi CT18 (AL513382) and assign Typhi genotype codes and detect AMR mutations.
 #
 # Authors - Kat Holt (kholt@unimelb.edu.au), Zoe Dyson (zad24@medschl.cam.ac.uk)
 #
@@ -9,7 +9,7 @@
 # Dependencies:
 #	 SAMtools (v1.2) and bcftools (v1.2) are required to genotype from BAMs.
 #
-# Last modified - June 7th, 2019
+# Last modified - Feb 29th, 2020
 #
 
 from argparse import (ArgumentParser, FileType)
@@ -24,14 +24,14 @@ from subprocess import call, check_output, CalledProcessError, STDOUT
 def parse_args():
 	"Parse the input arguments, use '-h' for help"
 	parser = ArgumentParser(description='VCF to Typhi genotypes')
-	parser.add_argument('--mode', required=True, 
+	parser.add_argument('--mode', required=True,
 		help='Mode to run in based on input files (vcf, bam, or vcf_parsnp)')
 	parser.add_argument(
 		'--vcf', nargs='+', type=str, required=False,
 		help='VCF file(s) to genotype (Mapping MUST have been done using CT18 as a reference sequence)')
 	parser.add_argument('--bam', nargs='+', type=str, required=False,
 		help='BAM file(s) to genotype (Mapping MUST have been done using CT18 as a reference sequence)')
-	parser.add_argument('--ref_id', type=str, required=False, 
+	parser.add_argument('--ref_id', type=str, required=False,
 						help='Name of the reference in the VCF file (#CHROM column) or fasta file. Note that CT18 has genotype 3.2.1. If all your strains return this genotype, it is likely you have specified the name of the refrence sequence incorrectly; please check your VCFs.')
 	parser.add_argument('--phred', type=int, required=False, default=20,
 						help='Minimum phred quality to count a variant call vs CT18 as a true SNP (default 20)')
@@ -54,7 +54,7 @@ loci = [655112, 773487, 1804415, 1840727, 3640678, 270120, 102135, 316489, 41053
 		4094437, 827036, 3476114, 4355243, 2723847, 4388609, 703762, 431216, 3095443, 316186, 1934711, 2811222, 3092900,
 		2723724, 3437570, 1780319, 1535365, 1792810, 3062270, 1799842, 432732, 3069182, 2732615, 3770391, 2269835,
 		4215341, 4602946, 3368641, 2245432, 3164162, 3923165, 1811809, 3729635, 3817752, 183033, 1615350, 2342045,
-		3996717, 2640029, 989024, 3806278, 1611156, 2348902, 1193220, 3694947, 955875, 
+		3996717, 2640029, 989024, 3806278, 1611156, 2348902, 1193220, 3694947, 955875,
 		3498544,
 		2424394,
 		2272144,
@@ -62,7 +62,7 @@ loci = [655112, 773487, 1804415, 1840727, 3640678, 270120, 102135, 316489, 41053
 snp_alleles = ['T', 'A', 'C', 'A', 'A', 'T', 'A', 'C', 'T', 'A', 'T', 'T', 'A', 'T', 'T', 'G', 'G', 'A', 'A', 'A', 'T',
 			   'A', 'T', 'A', 'A', 'A', 'A', 'T', 'C', 'A', 'C', 'A', 'A', 'A', 'T', 'T', 'T', 'T', 'G', 'C', 'A', 'T',
 			   'T', 'C', 'C', 'T', 'G', 'A', 'T', 'G', 'C', 'T', 'T', 'A', 'A', 'A', 'T', 'T', 'T', 'T', 'T', 'A', 'T',
-			   'A', 'T', 'A', 'A', 'T', 'C', 'G', 'A', 
+			   'A', 'T', 'A', 'A', 'T', 'C', 'G', 'A',
 			   'G',
 			   'A',
 			   'A',
@@ -72,7 +72,7 @@ groups = ['0.1', '0.0.1', '0.0.2', '0.0.3', '0.1.1', '0.1.2', '0.1.3', '1', '1.1
 		  '2.1.8', '2.1.9', '2.2', '2.2.1', '2.2.2', '2.2.3', '2.2.4', '2.3', '2.3.1', '2.3.2', '2.3.3', '2.3.4',
 		  '2.3.5', '2.4', '2.4.1', '2.5', '2.5.1', '3', '3.0.1', '3.0.2', '3.1', '3.1.1', '3.1.2', '3.2', '3.2.1',
 		  '3.2.2', '3.3', '3.3.1', '3.4', '3.5', '3.5.1', '3.5.2', '3.5.3', '3.5.4', '4', '4.1', '4.1.1', '4.2',
-		  '4.2.1', '4.2.2', '4.2.3', '4.3.1', '4.3.1.1', '4.3.1.2', '4.3.1.1.P1', 
+		  '4.2.1', '4.2.2', '4.2.3', '4.3.1', '4.3.1.1', '4.3.1.2', '4.3.1.1.P1',
 		  '3.3.2',
 		  '3.3.2.Bd1',
 		  '3.3.2.Bd2',
@@ -80,9 +80,9 @@ groups = ['0.1', '0.0.1', '0.0.2', '0.0.3', '0.1.1', '0.1.2', '0.1.3', '1', '1.1
 
 ### QRDR SNP definitions
 
-qrdr_loci = [2333762, 2333762, 2333750, 2333750, 2333751, 2333751, 3196469, 3196470, 3196458, 3196459] 
-qrdr_snp_alleles = ['A', 'T', 'A', 'C', 'A', 'T', 'T', 'A', 'C', 'T'] 
-qrdr_groups = [' gyrA-S83F', ' gyrA-S83Y', ' gyrA-D87V', ' gyrA-D87G', ' gyrA-D87Y', ' gyrA-D87N', ' parC-S80R', ' parC-S80I', ' parC-E84G', ' parC-E84K']
+qrdr_loci = [523109, 2333762, 2333762, 2333750, 2333750, 2333751, 2333751, 3196469, 3196470, 3196458, 3196459]
+qrdr_snp_alleles = ['T', 'A', 'T', 'A', 'C', 'A', 'T', 'T', 'A', 'C', 'T']
+qrdr_groups = [' acrB-R717Q', ' gyrA-S83F', ' gyrA-S83Y', ' gyrA-D87V', ' gyrA-D87G', ' gyrA-D87Y', ' gyrA-D87N', ' parC-S80R', ' parC-S80I', ' parC-E84G', ' parC-E84K']
 
 
 # check if this SNP defines a QRDR group
@@ -112,11 +112,11 @@ def checkQRDRSNP(vcf_line_split, this_qrdr_groups, qrdr_proportions, args):
 
 				else:
 					qrdr_snp_proportion = float(-1)	# set unknowns to negative so that we know this is not a real proportion
-				
+
 			qrdr_snp_allele = vcf_line_split[4]
-			for position in xrange(0,10):
+			for position in xrange(0,11):
 				if (qrdr_snp == qrdr_loci[position]) and (qrdr_snp_allele == qrdr_snp_alleles[position]) and (qrdr_snp_proportion > args.min_prop):
-					this_qrdr_groups.append(qrdr_groups[position])  # Add QRDR SNP	
+					this_qrdr_groups.append(qrdr_groups[position])  # Add QRDR SNP
 
 	return (this_qrdr_groups)
 
@@ -126,7 +126,7 @@ def checkSNP(vcf_line_split, this_groups, proportions, args):
 	snp = int(vcf_line_split[1])
 	if snp in loci:
 		i = loci.index(snp)
-		
+
 		if float(vcf_line_split[5]) > args.phred:
 			print vcf_line_split
 			m = re.search("DP4=(\d+),(\d+),(\d+),(\d+)", vcf_line_split[7])
@@ -191,7 +191,7 @@ def parseGeno(this_groups, proportions):
 
 	# fix 4.3.1/4.3.1.1/4.3.1.2/4.3.1.P1/4.3.1.3 nesting
 	if ('4.3.1.3' in subclades) and ('4.3.1' in subclades):
-		subclades.remove('4.3.1')			
+		subclades.remove('4.3.1')
 	if ('4.3.1.1' in subclades) and ('4.3.1' in subclades):
 		subclades.remove('4.3.1')
 	if('4.3.1.2' in subclades) and ('4.3.1' in subclades):
@@ -200,7 +200,7 @@ def parseGeno(this_groups, proportions):
                 subclades.remove('4.3.1')
         if('4.3.1.1.P1' in subclades) and ('4.3.1.1' in subclades):
                 subclades.remove('4.3.1.1')
-                
+
 	# fix 3.3.2.Bd nesting
 	if ('3.3.2.Bd1' in subclades) and ('3.3.2' in subclades):
 		subclades.remove('3.3.2')
@@ -329,9 +329,9 @@ def run_command(command, **kwargs):
 # main function
 def main():
 	args = parse_args()
-	
-	if (((args.mode == 'vcf') and args.vcf and args.ref_id) or ((args.mode == 'bam') and args.bam and args.ref and args.ref_id) or ((args.mode == 'vcf_parsnp') and args.vcf)):	
-		
+
+	if (((args.mode == 'vcf') and args.vcf and args.ref_id) or ((args.mode == 'bam') and args.bam and args.ref and args.ref_id) or ((args.mode == 'vcf_parsnp') and args.vcf)):
+
 		# Initialise output file and timestamp
 		timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y.%m.%d_%H:%M:%S_')
 		output_file = open(timestamp + args.output , 'w')
@@ -339,20 +339,20 @@ def main():
 		# GENERATE VCFS (1 per strain) FROM BAMS
 
 		if args.mode == 'bam':
-		
+
 			with open(args.ref, 'r') as fasta_file: # create SAMtools compatible fasta file
 				sequences = fasta_file.read()
 				for sequence in sequences.split('>'):
-					if args.ref_id in sequence:	
+					if args.ref_id in sequence:
 						new_header = '>' + args.ref_id
 						replacement_index = sequence.find('\n')
 						sequence = new_header + sequence[replacement_index:]
-						with open('temp_reference.fasta', 'w') as temp_fasta_file: 
+						with open('temp_reference.fasta', 'w') as temp_fasta_file:
 							temp_fasta_file.write(sequence)
-					
+
 
 			vcfFiles = []
-			
+
 			# coordinates in zero-base, half-open for SAMtools compatible bed file
 			ordered_loci = list(loci + qrdr_loci)
 			sorted(ordered_loci)
@@ -368,39 +368,39 @@ def main():
 				print 'bam files supplied, generating vcf file for ' + bam
 				if os.path.exists(bam + '.bai') == False: # index bam file if indexed bam not provided
 					run_command([args.samtools_location + 'samtools', 'index', bam])
-					
+
 				run_command(
 					[args.samtools_location + 'samtools', 'mpileup', '-q', str(args.phred), '-ugB', '-f', 'temp_reference.fasta',
 				 	'-l', args.ref_id + '.bed', bam, '-o', bam[:-4] + '.output', '-I']) # detect SNPs
-				 	
+
 				run_command(
 					[args.bcftools_location + 'bcftools', 'call', '-c', bam[:-4] + '.output', '-o', bam[:-4] + '.vcf']) # generate vcf files
 				run_command(['rm', bam[:-4] + '.output'])
-				
+
 				vcfFiles.append(bam[:-4] + '.vcf')	# supply generated vcf file to script
-				
+
 			run_command(['rm', args.ref_id + '.bed']) # remove temp files
 			run_command(['rm','temp_reference.fasta'])
 			run_command(['rm', 'temp_reference.fasta.fai'])
-			
+
 			args.vcf = vcfFiles
 
 
 		# PRINT OUTPUT HEADER
-		
+
 		if args.mode == 'bam':
 			output_file.write('\t'.join(
 				['File', 'Final_call', 'Final_call_support', 'Subclade', 'Clade', 'PrimaryClade', 'Support_Subclade',
-				 'Support_Clade', 'Support_PrimaryClade', 'Number of SNPs called', 'QRDR mutations\n']))
+				 'Support_Clade', 'Support_PrimaryClade', 'Number of SNPs called', 'AMR mutations\n']))
 		elif args.mode == 'vcf':
 			output_file.write('\t'.join(
 				['File', 'Final_call', 'Final_call_support', 'Subclade', 'Clade', 'PrimaryClade', 'Support_Subclade',
-				 'Support_Clade', 'Support_PrimaryClade', 'QRDR mutations\n']))
+				 'Support_Clade', 'Support_PrimaryClade', 'AMR mutations\n']))
 		else:
 			output_file.write('\t'.join(
 				['File', 'Final_call', 'Final_call_support', 'Subclade', 'Clade', 'PrimaryClade', 'Support_Subclade',
 				 'Support_Clade', 'Support_PrimaryClade\n']))
-				 
+
 
 		# PARSE MAPPING BASED VCFS (1 per strain)
 
@@ -449,7 +449,7 @@ def main():
 		# PARSE PARSNP VCF (multiple strains)
 
 		if args.mode == 'vcf_parsnp':
-		
+
 			if not args.ref_id:
 				args.ref_id = '1'
 
@@ -496,4 +496,3 @@ def main():
 # call main function
 if __name__ == '__main__':
 	main()
-
