@@ -2,9 +2,11 @@
 
 This script assigns genotypes to *Salmonella* Typhi genomes and detectes known mutations in the quinolone-resistance determining region (QRDR) of genes *gyrA* and *parC*, as well as the acrB-R717Q mutation confering resistance to azithromycin. 
 
-#### Citations
+The genotyping scheme is described in this paper, **which serves as the primary citation for the scheme**: ["An extended genotyping framework for Salmonella enterica serovar Typhi, the cause of human typhoid", Wong et al, 2016, Nature Communications](http://www.nature.com/articles/ncomms12827/).
 
-The genotyping scheme is described in this paper, **which serves as the primary citation for the scheme**: ["An extended genotyping framework for Salmonella enterica serovar Typhi, the cause of human typhoid", Wong et al, 2016, Nature Communications](http://www.nature.com/articles/ncomms12827/). The orignal genotyping method is summarised in [this blog post](https://holtlab.net/2016/10/12/global-picture-typhoid/).
+The orignal genotyping method is also summarised in [this blog post](https://holtlab.net/2016/10/12/global-picture-typhoid/).
+
+#### Additional features and citations
 
 An updated version of the code that **detects QRDR mutations, and genotypes H58 lineages 4.3.1.1, 4.3.1.2 and 4.3.1.3** was developed and described in the papers ["Laboratory and Molecular Surveillance of Paediatric Typhoidal Salmonella in Nepal: Antimicrobial Resistance and Implications for Vaccine Policy", Britto et al 2018, bioRxiv](https://www.biorxiv.org/content/early/2018/01/18/250142) ["Population structure and antimicrobial resistance patterns of Salmonella Typhi isolates in Bangladesh from 2004 to 2016", Rahman et al 2019, bioRxiv](https://www.biorxiv.org/content/10.1101/664136v1) (please cite all three papers if you report genotyphi-inferred QRDR mutations and/or H58 sublineages 1,2,3 (ie 4.3.1.1, 4.3.1.2, 4.3.1.3). 
 
