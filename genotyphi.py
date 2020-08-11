@@ -2,14 +2,14 @@
 #
 # Input BAM (recommended) or VCF (if highly trusted SNP data) relative to Typhi CT18 (AL513382) and assign Typhi genotype codes and detect AMR mutations.
 #
-# Authors - Kat Holt (kholt@unimelb.edu.au), Zoe Dyson (zad24@medschl.cam.ac.uk)
+# Authors - Kat Holt (kholt@unimelb.edu.au), Zoe Dyson (zoe.dyson@lshtm.ac.uk & zad24@medschl.cam.ac.uk)
 #
 # Documentation - https://github.com/katholt/genotyphi
 #
 # Dependencies:
 #	 SAMtools (v1.2) and bcftools (v1.2) are required to genotype from BAMs.
 #
-# Last modified - Feb 29th, 2020
+# Last modified - Aug 11th, 2020
 #
 
 from argparse import (ArgumentParser, FileType)
@@ -58,7 +58,7 @@ loci = [655112, 773487, 1804415, 1840727, 3640678, 270120, 102135, 316489, 41053
 		3498544,
 		2424394,
 		2272144,
-		561056]
+		561056,3164873]
 snp_alleles = ['T', 'A', 'C', 'A', 'A', 'T', 'A', 'C', 'T', 'A', 'T', 'T', 'A', 'T', 'T', 'G', 'G', 'A', 'A', 'A', 'T',
 			   'A', 'T', 'A', 'A', 'A', 'A', 'T', 'C', 'A', 'C', 'A', 'A', 'A', 'T', 'T', 'T', 'T', 'G', 'C', 'A', 'T',
 			   'T', 'C', 'C', 'T', 'G', 'A', 'T', 'G', 'C', 'T', 'T', 'A', 'A', 'A', 'T', 'T', 'T', 'T', 'T', 'A', 'T',
@@ -66,7 +66,7 @@ snp_alleles = ['T', 'A', 'C', 'A', 'A', 'T', 'A', 'C', 'T', 'A', 'T', 'T', 'A', 
 			   'G',
 			   'A',
 			   'A',
-			   'A']
+			   'A','A']
 groups = ['0.1', '0.0.1', '0.0.2', '0.0.3', '0.1.1', '0.1.2', '0.1.3', '1', '1.1', '1.1.1', '1.1.2', '1.1.3', '1.1.4',
 		  '1.2', '1.2.1', '2', '2.0.1', '2.0.2', '2.1', '2.1.1', '2.1.2', '2.1.3', '2.1.4', '2.1.5', '2.1.6', '2.1.7',
 		  '2.1.8', '2.1.9', '2.2', '2.2.1', '2.2.2', '2.2.3', '2.2.4', '2.3', '2.3.1', '2.3.2', '2.3.3', '2.3.4',
@@ -76,7 +76,7 @@ groups = ['0.1', '0.0.1', '0.0.2', '0.0.3', '0.1.1', '0.1.2', '0.1.3', '1', '1.1
 		  '3.3.2',
 		  '3.3.2.Bd1',
 		  '3.3.2.Bd2',
-		  '4.3.1.3']
+		  '4.3.1.3','2.5.2']
 
 ### QRDR SNP definitions
 
