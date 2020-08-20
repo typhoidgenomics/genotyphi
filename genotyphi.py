@@ -91,7 +91,7 @@ def checkQRDRSNP(vcf_line_split, this_qrdr_groups, qrdr_proportions, args):
 	if qrdr_snp in qrdr_loci:
 		i = qrdr_loci.index(qrdr_snp)
 		if float(vcf_line_split[5]) > args.phred:
-			print vcf_line_split
+			print(vcf_line_split)
 			m = re.search("DP4=(\d+),(\d+),(\d+),(\d+)", vcf_line_split[7])
 			if m != None:
 				alt_read_count = int(m.group(3)) + int(m.group(4))
@@ -114,7 +114,7 @@ def checkQRDRSNP(vcf_line_split, this_qrdr_groups, qrdr_proportions, args):
 					qrdr_snp_proportion = float(-1)	# set unknowns to negative so that we know this is not a real proportion
 
 			qrdr_snp_allele = vcf_line_split[4]
-			for position in xrange(0,11):
+			for position in range(0,11):
 				if (qrdr_snp == qrdr_loci[position]) and (qrdr_snp_allele == qrdr_snp_alleles[position]) and (qrdr_snp_proportion > args.min_prop):
 					this_qrdr_groups.append(qrdr_groups[position])  # Add QRDR SNP
 
@@ -128,7 +128,7 @@ def checkSNP(vcf_line_split, this_groups, proportions, args):
 		i = loci.index(snp)
 
 		if float(vcf_line_split[5]) > args.phred:
-			print vcf_line_split
+			print(vcf_line_split)
 			m = re.search("DP4=(\d+),(\d+),(\d+),(\d+)", vcf_line_split[7])
 			if m != None:
 				alt_read_count = int(m.group(3)) + int(m.group(4))
@@ -365,7 +365,7 @@ def main():
 			run_command(['samtools', 'faidx', 'temp_reference.fasta'])	# index fasta file
 
 			for bam in args.bam:
-				print 'bam files supplied, generating vcf file for ' + bam
+				print('bam files supplied, generating vcf file for ' + bam)
 				if os.path.exists(bam + '.bai') == False: # index bam file if indexed bam not provided
 					run_command([args.samtools_location + 'samtools', 'index', bam])
 
@@ -435,7 +435,7 @@ def main():
 
 				f.close()
 
-				print "qrdr groups".join(qrdr_groups)
+				print("qrdr groups".join(qrdr_groups))
 				if any_ref_line > 0:
 					info = parseGeno(this_groups, proportions)
 					if args.bam:
@@ -491,7 +491,7 @@ def main():
 
 		output_file.close()
 	else:
-		print 'Missing or incomplete input parameters, please check these and try again.'
+		print('Missing or incomplete input parameters, please check these and try again.')
 
 # call main function
 if __name__ == '__main__':
