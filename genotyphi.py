@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 """
 Input BAM (recommended) or VCF (if highly trusted SNP data) relative to Typhi CT18 (AL513382) and assign Typhi genotype codes and detect AMR mutations.
 
