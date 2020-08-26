@@ -13,24 +13,29 @@ Dependencies:
 Last modified - Aug 11th, 2020
 """
 
-import datetime
 import gzip
 import logging
 import os
+import pathlib
 import re
-import time
-from argparse import (ArgumentParser)
-from subprocess import call
+import sys
+import tempfile
+import argparse
+from subprocess import call, Popen, PIPE
+from typing import List, Optional
+
+from Bio.SeqIO.FastaIO import SimpleFastaParser
+
+LOG_FORMAT = '\033[2;36m{asctime}\033[0;1m {levelname:<8}\033[0m {message} \033[2m[{name}:{funcName}:{lineno}]\033[0m'
 
 
 def parse_args():
     """Parse the input arguments, use '-h' for help"""
-    parser = ArgumentParser(description='VCF to Typhi genotypes')
-    parser.add_argument('--mode', required=True,
+    parser = argparse.ArgumentParser(description='VCF to Typhi genotypes')
+    parser.add_argument('--mode', choices=('vcf', 'bam', 'vcf_parsnp'), default='bam',
                         help='Mode to run in based on input files (vcf, bam, or vcf_parsnp)')
-    parser.add_argument(
-        '--vcf', nargs='+', type=str, required=False,
-        help='VCF file(s) to genotype (Mapping MUST have been done using CT18 as a reference sequence)')
+    parser.add_argument('--vcf', nargs='+', type=str, required=False,
+                        help='VCF file(s) to genotype (Mapping MUST have been done using CT18 as a reference sequence)')
     parser.add_argument('--bam', nargs='+', type=str, required=False,
                         help='BAM file(s) to genotype (Mapping MUST have been done using CT18 as a reference sequence)')
     parser.add_argument('--ref_id', type=str, required=False,
@@ -43,12 +48,8 @@ def parse_args():
                         help='Minimum proportion of reads required to call a SNP (default 0.1)')
     parser.add_argument('--ref', type=str, required=False,
                         help='Reference sequence in fasta format. Required if bam files provided.')
-    parser.add_argument('--output', type=str, required=False, default='genotypes.txt',
-                        help='Location and name for output file.')
-    parser.add_argument('--samtools_location', type=str, required=False, default='',
-                        help='Location of folder containing samtools installation if not standard/in path.')
-    parser.add_argument('--bcftools_location', type=str, required=False, default='',
-                        help='Location of folder containing bcftools installation if not standard/in path.')
+    parser.add_argument('--output', type=str, required=False, default=None,
+                        help='Location and name for output file (default=stdout)')
     return parser.parse_args()
 
 
@@ -95,7 +96,7 @@ qrdr_groups = [' acrB-R717Q', ' gyrA-S83F', ' gyrA-S83Y', ' gyrA-D87V', ' gyrA-D
 def checkQRDRSNP(vcf_line_split, this_qrdr_groups, args):
     qrdr_snp = int(vcf_line_split[1])
     if qrdr_snp in qrdr_loci and float(vcf_line_split[5]) > args.phred:
-        print(vcf_line_split)
+        logging.info(vcf_line_split)
         m = re.search(r"DP4=(\d+),(\d+),(\d+),(\d+)", vcf_line_split[7])
         if m is None:
             if vcf_line_split[4] == '.':
@@ -129,12 +130,12 @@ def checkQRDRSNP(vcf_line_split, this_qrdr_groups, args):
 
 # check if this SNP defines a group
 def checkSNP(vcf_line_split, this_groups, proportions, args):
-    snp = int(vcf_line_split[1])
-    if snp in loci:
-        i = loci.index(snp)
+    location = int(vcf_line_split[1])
+    if location in loci:
+        i = loci.index(location)
 
         if float(vcf_line_split[5]) > args.phred:
-            print(vcf_line_split)
+            logging.debug(vcf_line_split)
             m = re.search(r"DP4=(\d+),(\d+),(\d+),(\d+)", vcf_line_split[7])
             if m is None:
                 if vcf_line_split[4] == '.':
@@ -178,8 +179,9 @@ def checkSNPmulti(vcf_line_split, this_groups, args):
     return this_groups
 
 
-# sort groups into the three levels (primary, clade, subclade)
-def parseGeno(this_groups, proportions):
+
+def parseGeno(this_groups, proportions) -> str:
+    """sort groups into the three levels (primary, clade, subclade)"""
     subclades = []
     clades = []
     primary = []
@@ -337,126 +339,71 @@ def run_command(command, **kwargs):
 def main():
     args = parse_args()
 
-    if (((args.mode == 'vcf') and args.vcf and args.ref_id) or (
-            (args.mode == 'bam') and args.bam and args.ref and args.ref_id) or (
-            (args.mode == 'vcf_parsnp') and args.vcf)):
+    logging.basicConfig(format=LOG_FORMAT, level=logging.DEBUG, style='{')
+    logging.info(f'Parsed args: {args}')
+    ref_id = args.ref_id
+    ref_fasta = args.ref
+    bams: Optional[List[str]] = args.bam
+    vcfs: Optional[List[str]] = args.vcf
+    mode: str = args.mode
 
-        # Initialise output file and timestamp
-        timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y.%m.%d_%H:%M:%S_')
-        output_file = open(timestamp + args.output, 'w')
+    if (((mode == 'vcf') and vcfs and ref_id) or (
+            (mode == 'bam') and bams and ref_fasta and ref_id) or (
+            (mode == 'vcf_parsnp') and vcfs)):
 
-        # GENERATE VCFS (1 per strain) FROM BAMS
+        if mode == 'bam':
+            # GENERATE VCFS (1 per strain) FROM BAMS
+            vcfs = vcfs_from_bams(bams, ref_fasta, ref_id, phred=args.phred)
 
-        if args.mode == 'bam':
-
-            with open(args.ref, 'r') as fasta_file:  # create SAMtools compatible fasta file
-                sequences = fasta_file.read()
-                for sequence in sequences.split('>'):
-                    if args.ref_id in sequence:
-                        new_header = '>' + args.ref_id
-                        replacement_index = sequence.find('\n')
-                        sequence = new_header + sequence[replacement_index:]
-                        with open('temp_reference.fasta', 'w') as temp_fasta_file:
-                            temp_fasta_file.write(sequence)
-
-            vcfFiles = []
-
-            # coordinates in zero-base, half-open for SAMtools compatible bed file
-            ordered_loci = list(loci + qrdr_loci)
-            sorted(ordered_loci)
-            temp_bed_file = open(args.ref_id + '.bed', 'w')  # create temporary bed file for SAMtools
-            for locus in ordered_loci:
-                temp_bed_file.write(
-                    args.ref_id + '\t' + str(locus - 1) + '\t' + str(locus) + '\n')  # write bed file from matrix
-            temp_bed_file.close()  # close bedFile
-
-            run_command(['samtools', 'faidx', 'temp_reference.fasta'])  # index fasta file
-
-            for bam in args.bam:
-                print('bam files supplied, generating vcf file for ' + bam)
-                if not os.path.exists(bam + '.bai'):  # index bam file if indexed bam not provided
-                    run_command([args.samtools_location + 'samtools', 'index', bam])
-
-                run_command(
-                    [args.samtools_location + 'samtools', 'mpileup', '-q', str(args.phred), '-ugB', '-f',
-                     'temp_reference.fasta',
-                     '-l', args.ref_id + '.bed', bam, '-o', bam[:-4] + '.output', '-I'])  # detect SNPs
-
-                run_command(
-                    [args.bcftools_location + 'bcftools', 'call', '-c', bam[:-4] + '.output', '-o',
-                     bam[:-4] + '.vcf'])  # generate vcf files
-                run_command(['rm', bam[:-4] + '.output'])
-
-                vcfFiles.append(bam[:-4] + '.vcf')  # supply generated vcf file to script
-
-            run_command(['rm', args.ref_id + '.bed'])  # remove temp files
-            run_command(['rm', 'temp_reference.fasta'])
-            run_command(['rm', 'temp_reference.fasta.fai'])
-
-            args.vcf = vcfFiles
-
-        # PRINT OUTPUT HEADER
-
-        if args.mode == 'bam':
-            output_file.write('\t'.join(
-                ['File', 'Final_call', 'Final_call_support', 'Subclade', 'Clade', 'PrimaryClade', 'Support_Subclade',
-                 'Support_Clade', 'Support_PrimaryClade', 'Number of SNPs called', 'AMR mutations\n']))
-        elif args.mode == 'vcf':
-            output_file.write('\t'.join(
-                ['File', 'Final_call', 'Final_call_support', 'Subclade', 'Clade', 'PrimaryClade', 'Support_Subclade',
-                 'Support_Clade', 'Support_PrimaryClade', 'AMR mutations\n']))
-        else:
-            output_file.write('\t'.join(
-                ['File', 'Final_call', 'Final_call_support', 'Subclade', 'Clade', 'PrimaryClade', 'Support_Subclade',
-                 'Support_Clade', 'Support_PrimaryClade\n']))
-
+        output_headers = get_output_headers(mode)
         # PARSE MAPPING BASED VCFS (1 per strain)
+        if vcfs and (mode != 'vcf_parsnp'):
+            with open(args.output, 'w') if args.output else sys.stdout as output_file:
+                output_file.write(f'{output_headers}\n')
+                for vcf in vcfs:
+                    snp_count = 0
+                    this_groups = []  # list of groups identified by defining SNPs
+                    this_qrdr_groups = []  # list of QRDR SNPs found
+                    # proportion of reads supporting each defining SNP; key = group, value = proportion
+                    proportions = {}
+                    _, ext = os.path.splitext(vcf)
+                    with gzip.open(vcf, 'r') if ext == '.gz' else open(vcf, 'r') as vcf_handle:
+                        any_ref_line = 0
+                        for line in vcf_handle:
+                            if not line.startswith('#'):
+                                vcf_line_split = line.strip().split('\t')
+                                if not vcf_line_split:
+                                    snp_count += 1
+                                if vcf_line_split[0] == args.ref_id:
+                                    # parse this SNP line
+                                    any_ref_line = 1
+                                    (this_groups, proportions) = checkSNP(vcf_line_split, this_groups, proportions,
+                                                                          args)
+                                    this_qrdr_groups = checkQRDRSNP(vcf_line_split, this_qrdr_groups, args)
 
-        if args.vcf and (args.mode != 'vcf_parsnp'):
-            for vcf in args.vcf:
-                snp_count = 0
-                this_groups = []  # list of groups identified by defining SNPs
-                this_qrdr_groups = []  # list of QRDR SNPs found
-                proportions = {}  # proportion of reads supporting each defining SNP; key = group, value = proportion
-
-                # read file
-                (file_name, ext) = os.path.splitext(vcf)
-
-                if ext == '.gz':
-                    f = gzip.open(vcf, 'r')
-                else:
-                    f = open(vcf, 'r')
-
-                any_ref_line = 0
-
-                for line in f:
-                    if not line.startswith('#'):
-                        x = line.rstrip().split()
-                        if not line.strip() == '':
-                            snp_count = snp_count + 1
-                        if x[0] == args.ref_id:
-                            # parse this SNP line
-                            any_ref_line = 1
-                            (this_groups, proportions) = checkSNP(x, this_groups, proportions, args)
-                            this_qrdr_groups = checkQRDRSNP(x, this_qrdr_groups, args)
-
-                f.close()
-
-                print("qrdr groups".join(qrdr_groups))
-                if any_ref_line > 0:
-                    info = parseGeno(this_groups, proportions)
-                    if args.bam:
-                        output_file.write(
-                            vcf + '\t' + info + '\t' + str(snp_count) + '\t' + ','.join(this_qrdr_groups) + '\n')
+                    logging.info("qrdr groups".join(qrdr_groups))
+                    if any_ref_line > 0:
+                        genotyping_result: str = parseGeno(this_groups, proportions)
+                        if args.bam:
+                            output_file.write(f'{vcf}'
+                                              f'\t{genotyping_result}'
+                                              f'\t{snp_count}'
+                                              f'\t{",".join(this_qrdr_groups)}'
+                                              f'\n')
+                        else:
+                            output_file.write(f'{vcf}'
+                                              f'\t{genotyping_result}'
+                                              f'\t{",".join(this_qrdr_groups)}'
+                                              f'\n')
                     else:
-                        output_file.write(vcf + '\t' + info + '\t' + ','.join(this_qrdr_groups) + '\n')
-                else:
-                    output_file.write(
-                        vcf + '\tNo SNPs encountered against expected reference. Wrong reference or no SNP calls?\n')
+                        output_file.write(f'{vcf}'
+                                          f'\tNo SNPs encountered against expected reference. '
+                                          f'Wrong reference or no SNP calls?'
+                                          f'\n')
 
         # PARSE PARSNP VCF (multiple strains)
 
-        if args.mode == 'vcf_parsnp':
+        if mode == 'vcf_parsnp':
 
             if not args.ref_id:
                 args.ref_id = '1'
@@ -467,38 +414,95 @@ def main():
                 (file_name, ext) = os.path.splitext(vcfm)
 
                 if ext == '.gz':
-                    f = gzip.open(vcfm, 'r')
+                    vcf_handle = gzip.open(vcfm, 'r')
                 else:
-                    f = open(vcfm, 'r')
+                    vcf_handle = open(vcfm, 'r')
 
                 any_ref_line = 0
 
                 this_groups = {}  # list of groups identified by defining SNPs, key = strain id (column number)
                 strains = []
 
-                for line in f:
-                    x = line.rstrip().split()
-                    if x[0] == '#CHROM':
-                        strains = x[10:]
+                for line in vcf_handle:
+                    vcf_line_split = line.rstrip().split()
+                    if vcf_line_split[0] == '#CHROM':
+                        strains = vcf_line_split[10:]
                     if not line.startswith('#'):
-                        if x[0] == args.ref_id:
+                        if vcf_line_split[0] == args.ref_id:
                             any_ref_line = 1  # parse this SNP line
-                            this_groups = checkSNPmulti(x, this_groups, args)
+                            this_groups = checkSNPmulti(vcf_line_split, this_groups, args)
 
-                f.close()
+                vcf_handle.close()
 
                 # collate by strain
                 if any_ref_line > 0:
                     for strain in this_groups:
-                        info = parseGeno(this_groups[strain], ['A'])
-                        output_file.write(strains[strain] + '\t' + info + '\n')
+                        genotyping_result = parseGeno(this_groups[strain], ['A'])
+                        output_file.write(strains[strain] + '\t' + genotyping_result + '\n')
                 else:
-                    output_file.write(f'{strains[strain]} | No SNPs encountered against expected reference. Wrong '
-                                      f'reference or no SNP calls?\n')
+                    output_file.write(f'{strains[strain]}'
+                                      f'\tNo SNPs encountered against expected reference. '
+                                      f'Wrong reference or no SNP calls?\n')
 
         output_file.close()
     else:
-        print('Missing or incomplete input parameters, please check these and try again.')
+        logging.info('Missing or incomplete input parameters, please check these and try again.')
+
+
+def get_output_headers(mode):
+    output_header = ['File', 'Final_call', 'Final_call_support', 'Subclade', 'Clade', 'PrimaryClade',
+                     'Support_Subclade', 'Support_Clade', 'Support_PrimaryClade']
+    if mode == 'bam':
+        output_header += ['Number of SNPs called', 'AMR mutations']
+    elif mode == 'vcf':
+        output_header += ['AMR mutations']
+    output_header = '\t'.join(output_header)
+    return output_header
+
+
+def vcfs_from_bams(bams, ref_fasta, ref_id, phred=20):
+    vcfs = []
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmpdir_path = pathlib.Path(tmpdir)
+        temp_fasta_path = tmpdir_path / 'tmp.fasta'
+        create_faidx_fasta(ref_fasta, ref_id, temp_fasta_path)
+        # index fasta file
+        run_command(['samtools', 'faidx', str(temp_fasta_path)])
+        fai_path = pathlib.Path(f'{temp_fasta_path}.fai')
+        assert fai_path.exists(), f'Reference FASTA index file "{fai_path}" does not exist.'
+        bed_path = tmpdir_path / 'tmp.bed'
+        create_bed_file(ref_id, bed_path)
+        create_bed_file(ref_id, f'genotyphi.bed')
+        for bam in bams:
+            bam = pathlib.Path(bam)
+            vcf_path = pathlib.Path(f'{bam}.vcf')
+            logging.info(f'bam files supplied, generating vcf file for {bam}')
+            if not pathlib.Path(f'{bam}.bai').exists():  # index bam file if indexed bam not provided
+                run_command(['samtools', 'index', str(bam)])
+            samtools_mpileup_cmd = ['samtools', 'mpileup', '-q', str(phred), '-ugB', '-f', str(temp_fasta_path), '-l', str(bed_path), '-I', str(bam)]
+            logging.info(f'Running {" ".join(samtools_mpileup_cmd)}')
+            proc_samtools_mpileup = Popen(samtools_mpileup_cmd, stdout=PIPE)
+            p = Popen(['bcftools', 'call', '-c', '-o', str(vcf_path)], stdin=proc_samtools_mpileup.stdout)
+            p.communicate()
+            assert vcf_path.exists(), f'VCF file "{vcf_path}" does not exist for BAM "{bam}"'
+            vcfs.append(vcf_path)
+    return vcfs
+
+
+def create_bed_file(ref_id, bed_path) -> None:
+    # coordinates in zero-base, half-open for SAMtools compatible bed file
+    # create temporary bed file for SAMtools
+    with open(bed_path, 'w') as temp_bed_file:
+        for locus in sorted(loci + qrdr_loci):
+            temp_bed_file.write(f'{ref_id}\t{locus - 1}\t{locus}\n')
+
+
+def create_faidx_fasta(ref_fasta, ref_id, temp_fasta_path) -> None:
+    # create SAMtools compatible fasta file
+    with open(ref_fasta, 'r') as fasta_file, open(temp_fasta_path, 'w') as temp_fasta_file:
+        for header, seq in SimpleFastaParser(fasta_file):
+            if ref_id in header:
+                temp_fasta_file.write(f'>{ref_id}\n{seq}\n')
 
 
 # call main function
