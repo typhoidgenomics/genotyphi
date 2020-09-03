@@ -10,9 +10,11 @@ Documentation - https://github.com/katholt/genotyphi
 Dependencies:
  SAMtools (v1.2) and bcftools (v1.2) are required to genotype from BAMs.
 
-Last modified - Aug 11th, 2020
+Last modified - Sep 3rd, 2020
+Adapted from https://github.com/katholt/genotyphi/commit/55eb40b71390ee5a39f2cc51fd95796f5ee26e65
 """
 
+import argparse
 import gzip
 import logging
 import os
@@ -20,7 +22,6 @@ import pathlib
 import re
 import sys
 import tempfile
-import argparse
 from subprocess import call, Popen, PIPE
 from typing import List, Optional
 
@@ -86,10 +87,10 @@ groups = ['0.1', '0.0.1', '0.0.2', '0.0.3', '0.1.1', '0.1.2', '0.1.3', '1', '1.1
 
 ### QRDR SNP definitions
 
-qrdr_loci = [523109, 2333762, 2333762, 2333750, 2333750, 2333751, 2333751, 3196469, 3196470, 3196458, 3196459]
-qrdr_snp_alleles = ['T', 'A', 'T', 'A', 'C', 'A', 'T', 'T', 'A', 'C', 'T']
-qrdr_groups = [' acrB-R717Q', ' gyrA-S83F', ' gyrA-S83Y', ' gyrA-D87V', ' gyrA-D87G', ' gyrA-D87Y', ' gyrA-D87N',
-               ' parC-S80R', ' parC-S80I', ' parC-E84G', ' parC-E84K']
+qrdr_loci = [523109, 523109, 2333762, 2333762, 2333750, 2333750, 2333751, 2333751, 3196469, 3196470, 3196458, 3196459]
+qrdr_snp_alleles = ['A', 'T', 'A', 'T', 'A', 'C', 'A', 'T', 'T', 'A', 'C', 'T']
+qrdr_groups = [' acrB-R717L', ' acrB-R717Q', ' gyrA-S83F', ' gyrA-S83Y', ' gyrA-D87V', ' gyrA-D87G', ' gyrA-D87Y',
+               ' gyrA-D87N', ' parC-S80R', ' parC-S80I', ' parC-E84G', ' parC-E84K']
 
 
 # check if this SNP defines a QRDR group
@@ -119,11 +120,11 @@ def checkQRDRSNP(vcf_line_split, this_qrdr_groups, args):
                 qrdr_snp_proportion = float(-1)
             else:
                 qrdr_snp_proportion = float(alt_read_count) / total_read_count
-        qrdr_snp_allele = vcf_line_split[4]
-        for position in range(11):
-            if (qrdr_snp == qrdr_loci[position]) and (qrdr_snp_allele == qrdr_snp_alleles[position]) and (
-                    qrdr_snp_proportion > args.min_prop):
-                this_qrdr_groups.append(qrdr_groups[position])  # Add QRDR SNP
+        if qrdr_snp_proportion > args.min_prop:
+            qrdr_snp_allele = vcf_line_split[4]
+            for idx, locus in enumerate(qrdr_loci):
+                if qrdr_snp == locus and qrdr_snp_allele == qrdr_snp_alleles[idx]:
+                    this_qrdr_groups.append(qrdr_groups[idx])  # Add QRDR SNP
 
     return this_qrdr_groups
 
@@ -177,7 +178,6 @@ def checkSNPmulti(vcf_line_split, this_groups, args):
                     this_groups[strain] = [groups[i]]
             strain += 1
     return this_groups
-
 
 
 def parseGeno(this_groups, proportions) -> str:
@@ -480,7 +480,8 @@ def vcfs_from_bams(bams, ref_fasta, ref_id, phred=20):
             logging.info(f'bam files supplied, generating vcf file for {bam}')
             if not pathlib.Path(f'{bam}.bai').exists():  # index bam file if indexed bam not provided
                 run_command(['samtools', 'index', str(bam)])
-            samtools_mpileup_cmd = ['samtools', 'mpileup', '-q', str(phred), '-ugB', '-f', str(temp_fasta_path), '-l', str(bed_path), '-I', str(bam)]
+            samtools_mpileup_cmd = ['samtools', 'mpileup', '-q', str(phred), '-ugB', '-f', str(temp_fasta_path), '-l',
+                                    str(bed_path), '-I', str(bam)]
             logging.info(f'Running {" ".join(samtools_mpileup_cmd)}')
             proc_samtools_mpileup = Popen(samtools_mpileup_cmd, stdout=PIPE)
             p = Popen(['bcftools', 'call', '-c', '-o', str(vcf_path)], stdin=proc_samtools_mpileup.stdout)
