@@ -9,7 +9,7 @@
 # Dependencies:
 #	 SAMtools (v1.2) and bcftools (v1.2) are required to genotype from BAMs.
 #
-# Last modified - Aug 11th, 2020
+# Last modified - Sep 3rd, 2020
 #
 
 from argparse import (ArgumentParser, FileType)
@@ -80,9 +80,9 @@ groups = ['0.1', '0.0.1', '0.0.2', '0.0.3', '0.1.1', '0.1.2', '0.1.3', '1', '1.1
 
 ### QRDR SNP definitions
 
-qrdr_loci = [523109, 2333762, 2333762, 2333750, 2333750, 2333751, 2333751, 3196469, 3196470, 3196458, 3196459]
-qrdr_snp_alleles = ['T', 'A', 'T', 'A', 'C', 'A', 'T', 'T', 'A', 'C', 'T']
-qrdr_groups = [' acrB-R717Q', ' gyrA-S83F', ' gyrA-S83Y', ' gyrA-D87V', ' gyrA-D87G', ' gyrA-D87Y', ' gyrA-D87N', ' parC-S80R', ' parC-S80I', ' parC-E84G', ' parC-E84K']
+qrdr_loci = [523109, 523109, 2333762, 2333762, 2333750, 2333750, 2333751, 2333751, 3196469, 3196470, 3196458, 3196459]
+qrdr_snp_alleles = ['A' ,'T', 'A', 'T', 'A', 'C', 'A', 'T', 'T', 'A', 'C', 'T']
+qrdr_groups = [' acrB-R717L', ' acrB-R717Q', ' gyrA-S83F', ' gyrA-S83Y', ' gyrA-D87V', ' gyrA-D87G', ' gyrA-D87Y', ' gyrA-D87N', ' parC-S80R', ' parC-S80I', ' parC-E84G', ' parC-E84K']
 
 
 # check if this SNP defines a QRDR group
@@ -114,7 +114,7 @@ def checkQRDRSNP(vcf_line_split, this_qrdr_groups, qrdr_proportions, args):
 					qrdr_snp_proportion = float(-1)	# set unknowns to negative so that we know this is not a real proportion
 
 			qrdr_snp_allele = vcf_line_split[4]
-			for position in xrange(0,11):
+			for position in xrange(0,12):
 				if (qrdr_snp == qrdr_loci[position]) and (qrdr_snp_allele == qrdr_snp_alleles[position]) and (qrdr_snp_proportion > args.min_prop):
 					this_qrdr_groups.append(qrdr_groups[position])  # Add QRDR SNP
 
