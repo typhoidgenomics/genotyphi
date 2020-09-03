@@ -373,7 +373,8 @@ def main():
                             if not line.startswith('#'):
                                 vcf_line_split = line.strip().split('\t')
                                 if not vcf_line_split:
-                                    snp_count += 1
+                                    continue
+                                snp_count += 1
                                 if vcf_line_split[0] == args.ref_id:
                                     # parse this SNP line
                                     any_ref_line = 1
