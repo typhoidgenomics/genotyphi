@@ -1,7 +1,7 @@
 # genotyphi
 
 #### Intro & citation
-This script assigns genotypes to *Salmonella* Typhi genomes and detectes known mutations in the quinolone-resistance determining region (QRDR) of genes *gyrA* and *parC*, as well as the acrB-R717Q mutation confering resistance to azithromycin. 
+This script assigns genotypes to *Salmonella* Typhi genomes and detectes known mutations in the quinolone-resistance determining region (QRDR) of genes *gyrA* and *parC*, as well as the acrB-R717Q/L mutations confering resistance to azithromycin. 
 
 The genotyping scheme is described in this paper, **which serves as the primary citation for the scheme**: ["An extended genotyping framework for Salmonella enterica serovar Typhi, the cause of human typhoid", Wong et al, 2016, Nature Communications](http://www.nature.com/articles/ncomms12827/).
 
