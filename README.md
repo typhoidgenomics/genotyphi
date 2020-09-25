@@ -233,13 +233,13 @@ python genotyphi.py --mode vcf_parsnp --vcf parsnp.vcf --ref_id AL513382.1 --out
 ```
 Expected Output:
 
-P-stx-12 should be called as clade 4.3 (otherwise known as H58), Ty2 should be called as clade 4.1. 
+P-stx-12 should be called as clade 4.3.1 (otherwise known as H58), Ty2 should be called as clade 4.1. 
 
 The 'A' in the Final_call_support indicates the genotype calls were made from assembled data, hence no read support information is available.
 
 ```
 File	Final_call	Final_call_support	Subclade	Clade	PrimaryClade	Support_Subclade	Support_Clade	Support_PrimaryClade
-Pstx12.fasta	4.3	A		4.3	4			
+Pstx12.fasta	4.3.1	A		4.3.1	4			
 Ty2.fasta	4.1	A		4.1	4	
 
 ```
