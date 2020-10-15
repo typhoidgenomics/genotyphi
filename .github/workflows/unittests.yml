@@ -8,7 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [2.7, 3.5, 3.6, 3.7, 3.8]
+        python-version: [2.7]
+        #python-version: [2.7, 3.5, 3.6, 3.7, 3.8]
 
     steps:
     - uses: actions/checkout@v2
@@ -19,15 +20,15 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get install -y samtools bcftools bowtie2
-    - name: basic example
+    - name: Get data
       run: |
         wget -O CT18.fasta.gz ftp://ftp.ncbi.nlm.nih.gov/genomes/genbank/bacteria/Salmonella_enterica/reference/GCA_000195995.1_ASM19599v1/GCA_000195995.1_ASM19599v1_genomic.fna.gz
         gunzip CT18.fasta.gz
         # Need to figure out how to remove plasmid in this yaml format without emboss. Or maybe need to install emboss.
         #seqretsplit CT18.fasta
         #mv nc_003198.1.fasta CT18.fasta
-        
         # Extract chromosome and rename defline
         zcat CT18.fasta.gz | perl -lane 'last if($seenChrom); if(/>/){s/.+/>AL513382.1/; $seenChrom++;} print;' > CT18.fasta
         grep -A 1 ">" CT18.fasta
+        
         
