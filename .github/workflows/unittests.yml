@@ -32,6 +32,7 @@ jobs:
         bowtie2-build CT18.fasta CT18
         bowtie2 -p 1 -x CT18 -1 ERR343343_1.fastq.gz -2 ERR343343_2.fastq.gz -S output.sam
     - name: bam formatting
+      run: |
         samtools view -bS output.sam > unsorted_output.bam
         samtools sort unsorted_output.bam output
     - name: genotyphi
