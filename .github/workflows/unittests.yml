@@ -31,10 +31,10 @@ jobs:
       run: |
         bowtie2-build CT18.fasta CT18.fasta
         bowtie2 -p 2 -x CT18.fasta -1 ERR343343_1.fastq.gz -2 ERR343343_2.fastq.gz -S output.sam
-    - name: bam formatting
-      run: |
-        samtools view -T CT18.fasta -bS output.sam - > unsorted_output.bam
-        samtools sort unsorted_output.bam output
+    - name: sam to bam
+      run:  samtools view -T CT18.fasta -bS output.sam - > unsorted_output.bam
+    - name: sort bam
+      run:  samtools sort unsorted_output.bam output
     - name: genotyphi
       run: python genotyphi.py --mode bam --bam output.bam --ref CT18.fasta --ref_id AL513382.1 --output genotypes_test.txt
 
