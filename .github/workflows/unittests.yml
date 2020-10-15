@@ -34,7 +34,7 @@ jobs:
     - name: sam to bam
       run:  samtools view -hbS output.sam > unsorted_output.bam
     - name: sort bam
-      run:  samtools sort unsorted_output.bam output
+      run:  samtools sort -o output.bam unsorted_output.bam
     - name: genotyphi
       run: python genotyphi.py --mode bam --bam output.bam --ref CT18.fasta --ref_id AL513382.1 --output genotypes_test.txt
 
