@@ -48,6 +48,6 @@ jobs:
         PrimaryClade="4"
         Final_call_observed=$(tail -n 1 $resultsfile | cut -f 2)
         PrimaryClade_observed=$(tail -n 1 $resultsfile | cut -f 6)
-        [ "$PrimaryClade" == "$PrimaryClade_observed" ] && echo "Primary clade value was as expected, $PrimaryClade"
-        [ "$Final_call" == "$Final_call_observed" ] && echo "Final call was as expected, $Final_call_observed"
+        [ "$PrimaryClade" == "$PrimaryClade_observed" ] && echo "Primary clade value was as expected, $PrimaryClade_observed"
+        [ "$Final_call" == "$Final_call_observed" ] && echo "Final call was as expected, $Final_call_observed_observed"
         
