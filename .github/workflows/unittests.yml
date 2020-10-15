@@ -25,5 +25,15 @@ jobs:
         wget 'https://www.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nucleotide&id=AL513382.1&rettype=fasta' -O tmp.fasta
         cat tmp.fasta | perl -lane 'last if($seenChrom); if(/>/){s/.+/>AL513382.1/; $seenChrom++;} print;' > CT18.fasta
         grep -A 1 ">" CT18.fasta
-        
-        
+        wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR343/ERR343343/ERR343343_1.fastq.gz
+        wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR343/ERR343343/ERR343343_2.fastq.gz
+    - name: map
+      run: |
+        bowtie2-build CT18.fasta CT18
+        bowtie2 -p 1 -x CT18 -1 ERR343343_1.fastq.gz -2 ERR343343_2.fastq.gz -S output.sam
+    - name: bam formatting
+        samtools view -bS output.sam > unsorted_output.bam
+        samtools sort unsorted_output.bam output
+    - name: genotyphi
+      run: python genotyphi.py --mode bam --bam output.bam --ref CT18.fasta --ref_id AL513382.1 --output genotypes_test.txt
+
