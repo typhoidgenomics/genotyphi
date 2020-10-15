@@ -18,7 +18,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        apt-get install -y samtools bcftools bowtie2
+        sudo apt-get install -y samtools bcftools bowtie2
     - name: basic example
       run: |
         wget -O CT18.fasta.gz ftp://ftp.ncbi.nlm.nih.gov/genomes/genbank/bacteria/Salmonella_enterica/reference/GCA_000195995.1_ASM19599v1/GCA_000195995.1_ASM19599v1_genomic.fna.gz
