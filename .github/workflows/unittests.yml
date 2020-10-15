@@ -37,8 +37,8 @@ jobs:
       run:  samtools sort -o output.bam unsorted_output.bam
     - name: genotyphi
       run: python genotyphi.py --mode bam --bam output.bam --ref CT18.fasta --ref_id AL513382.1 --output genotypes_test.txt
-# File        Final_call  Final_call_support	Subclade	Clade	    PrimaryClade  Support_Subclade	Support_Clade  Support_PrimaryClade	Number of SNPs called  QRDR mutations
-# output.vcf	4.3.1.2     1.0                           4.3.1.2   4             1.0               1.0                                 77                     gyrA-D87G
+# File        Final_call  Final_call_support  Subclade  Clade     PrimaryClade  Support_Subclade  Support_Clade  Support_PrimaryClade  Number of SNPs called  QRDR mutations
+# output.vcf  4.3.1.2     1.0                           4.3.1.2   4             1.0               1.0                                  77                     gyrA-D87G
     - name: test output
       run: |
         ls -lht
