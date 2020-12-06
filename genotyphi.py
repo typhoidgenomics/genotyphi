@@ -9,7 +9,7 @@
 # Dependencies:
 #	 SAMtools (v1.2) and bcftools (v1.2) are required to genotype from BAMs.
 #
-# Last modified - Sep 3rd, 2020
+# Last modified - December 6th, 2020
 #
 
 from argparse import (ArgumentParser, FileType)
@@ -20,11 +20,14 @@ import time
 import datetime
 from subprocess import call, check_output, CalledProcessError, STDOUT
 
+__version__ = '1.7.0'
 
 def parse_args():
 	"Parse the input arguments, use '-h' for help"
 	parser = ArgumentParser(description='VCF to Typhi genotypes')
-	parser.add_argument('--mode', required=True,
+	parser.add_argument('--version', action='version', version='GenoTyphi v' + __version__,
+		help="Show GenoTyphi version number and exit")
+	parser.add_argument('--mode', required=False,
 		help='Mode to run in based on input files (vcf, bam, or vcf_parsnp)')
 	parser.add_argument(
 		'--vcf', nargs='+', type=str, required=False,
@@ -55,28 +58,21 @@ loci = [655112, 773487, 1804415, 1840727, 3640678, 270120, 102135, 316489, 41053
 		2723724, 3437570, 1780319, 1535365, 1792810, 3062270, 1799842, 432732, 3069182, 2732615, 3770391, 2269835,
 		4215341, 4602946, 3368641, 2245432, 3164162, 3923165, 1811809, 3729635, 3817752, 183033, 1615350, 2342045,
 		3996717, 2640029, 989024, 3806278, 1611156, 2348902, 1193220, 3694947, 955875,
-		3498544,
-		2424394,
-		2272144,
-		561056,3164873]
+		3498544,2424394,2272144,561056,3164873,
+		751854,4680610,2587488]
 snp_alleles = ['T', 'A', 'C', 'A', 'A', 'T', 'A', 'C', 'T', 'A', 'T', 'T', 'A', 'T', 'T', 'G', 'G', 'A', 'A', 'A', 'T',
 			   'A', 'T', 'A', 'A', 'A', 'A', 'T', 'C', 'A', 'C', 'A', 'A', 'A', 'T', 'T', 'T', 'T', 'G', 'C', 'A', 'T',
 			   'T', 'C', 'C', 'T', 'G', 'A', 'T', 'G', 'C', 'T', 'T', 'A', 'A', 'A', 'T', 'T', 'T', 'T', 'T', 'A', 'T',
-			   'A', 'T', 'A', 'A', 'T', 'C', 'G', 'A',
-			   'G',
-			   'A',
-			   'A',
-			   'A','A']
+			   'A', 'T', 'A', 'A', 'T', 'C', 'G', 'A','G','A','A','A','A',
+			   'A','T','A']
 groups = ['0.1', '0.0.1', '0.0.2', '0.0.3', '0.1.1', '0.1.2', '0.1.3', '1', '1.1', '1.1.1', '1.1.2', '1.1.3', '1.1.4',
 		  '1.2', '1.2.1', '2', '2.0.1', '2.0.2', '2.1', '2.1.1', '2.1.2', '2.1.3', '2.1.4', '2.1.5', '2.1.6', '2.1.7',
 		  '2.1.8', '2.1.9', '2.2', '2.2.1', '2.2.2', '2.2.3', '2.2.4', '2.3', '2.3.1', '2.3.2', '2.3.3', '2.3.4',
 		  '2.3.5', '2.4', '2.4.1', '2.5', '2.5.1', '3', '3.0.1', '3.0.2', '3.1', '3.1.1', '3.1.2', '3.2', '3.2.1',
 		  '3.2.2', '3.3', '3.3.1', '3.4', '3.5', '3.5.1', '3.5.2', '3.5.3', '3.5.4', '4', '4.1', '4.1.1', '4.2',
 		  '4.2.1', '4.2.2', '4.2.3', '4.3.1', '4.3.1.1', '4.3.1.2', '4.3.1.1.P1',
-		  '3.3.2',
-		  '3.3.2.Bd1',
-		  '3.3.2.Bd2',
-		  '4.3.1.3','2.5.2']
+		  '3.3.2','3.3.2.Bd1','3.3.2.Bd2','4.3.1.3','2.5.2',
+		  '4.3.1.1.EA1','4.3.1.2.EA2','4.3.1.2.EA3']
 
 ### QRDR SNP definitions
 
@@ -189,7 +185,7 @@ def parseGeno(this_groups, proportions):
 		elif level == 1:
 			primary.append(group)
 
-	# fix 4.3.1/4.3.1.1/4.3.1.2/4.3.1.P1/4.3.1.3 nesting
+	# fix 4.3.1/4.3.1.1/4.3.1.2/4.3.1.P1/4.3.1.3/EA nesting
 	if ('4.3.1.3' in subclades) and ('4.3.1' in subclades):
 		subclades.remove('4.3.1')
 	if ('4.3.1.1' in subclades) and ('4.3.1' in subclades):
@@ -200,6 +196,18 @@ def parseGeno(this_groups, proportions):
                 subclades.remove('4.3.1')
         if('4.3.1.1.P1' in subclades) and ('4.3.1.1' in subclades):
                 subclades.remove('4.3.1.1')
+	if('4.3.1.1.EA1' in subclades) and ('4.3.1.1' in subclades):
+		subclades.remove('4.3.1.1')
+	if('4.3.1.1.EA1' in subclades) and ('4.3.1' in subclades):
+		subclades.remove('4.3.1')
+	if('4.3.1.2.EA2' in subclades) and ('4.3.1.2' in subclades):
+		subclades.remove('4.3.1.2')
+	if('4.3.1.2.EA2' in subclades) and ('4.3.1' in subclades):
+		subclades.remove('4.3.1')
+	if('4.3.1.2.EA3' in subclades) and ('4.3.1.2' in subclades):
+		subclades.remove('4.3.1.2')
+	if('4.3.1.2.EA3' in subclades) and ('4.3.1' in subclades):
+		subclades.remove('4.3.1')
 
 	# fix 3.3.2.Bd nesting
 	if ('3.3.2.Bd1' in subclades) and ('3.3.2' in subclades):
