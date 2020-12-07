@@ -20,7 +20,7 @@ import time
 import datetime
 from subprocess import call, check_output, CalledProcessError, STDOUT
 
-__version__ = '1.7.0'
+__version__ = '1.7.1'
 
 def parse_args():
 	"Parse the input arguments, use '-h' for help"
