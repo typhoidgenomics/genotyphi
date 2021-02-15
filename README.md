@@ -13,6 +13,8 @@ An updated version of the code that **detects QRDR mutations, and genotypes H58 
 
 Following the publication of ["Emergence of an Extensively Drug-Resistant Salmonella enterica Serovar Typhi Clone Harboring a Promiscuous Plasmid Encoding Resistance to Fluoroquinolones and Third-Generation Cephalosporins", Klemm et al 2018, MBio](https://mbio.asm.org/content/9/1/e00105-18) genotyphi has been updated to identify members of the Pakistan XDR Typhi outbreak as 4.3.1.1.P1. Please cite this paper if you identify and report the presence of **genotype 4.3.1.1.P1**.
 
+The GenoTyphi scheme is also available via the online analysis platform [PathogenWatch](https://pathogen.watch/), which facilitates automated analysis of Typhi genomic reads or assemblies as described in [this paper](https://www.biorxiv.org/content/10.1101/2020.07.03.186692v1.full). Whichever tool you use to access the GenoTyphi scheme, please do remember to cite the [GenoTyphi paper](http://www.nature.com/articles/ncomms12827/).
+
 ## Getting set up
 
 #### Dependencies
