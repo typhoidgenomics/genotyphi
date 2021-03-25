@@ -22,6 +22,14 @@ Python 2.7.5+
 
 [SAMtools](http://samtools.sourceforge.net/) and [BCFtools](https://samtools.github.io/bcftools/) are also required if you are working from BAM files.  Genotyphi has been tested with versions 1.1, 1.2, and 1.3 of both SAMtools and bcftools, subsequently we advise using the same version of both of these dependencies together i.e. SAMtools v1.2 and bcftools v1.2
 
+#### Conda Installation
+Genotyphi is available from [Bioconda](https://bioconda.github.io/recipes/genotyphi/README.html) and can installed with the following command:
+
+```
+conda create -n genotyphi -c conda-forge -c bioconda genotyphi
+conda activate genotyphi
+```
+
 #### Input files
 Inputs are BAM or VCF files (mapped to the Typhi CT18 reference genome, [AL513382.1](https://www.ncbi.nlm.nih.gov/nuccore/AL513382.1)).
 
