@@ -2,14 +2,14 @@
 #
 # Input BAM (recommended) or VCF (if highly trusted SNP data) relative to Typhi CT18 (AL513382) and assign Typhi genotype codes and detect AMR mutations.
 #
-# Authors - Kat Holt (kholt@unimelb.edu.au), Zoe Dyson (zoe.dyson@lshtm.ac.uk & zad24@medschl.cam.ac.uk)
+# Authors - Kat Holt (kholt@unimelb.edu.au), Zoe Dyson (zoe.dyson@lshtm.ac.uk)
 #
 # Documentation - https://github.com/katholt/genotyphi
 #
 # Dependencies:
 #	 SAMtools (v1.2) and bcftools (v1.2) are required to genotype from BAMs.
 #
-# Last modified - March 20th, 2021
+# Last modified - April 1st, 2021
 #
 
 from argparse import (ArgumentParser, FileType)
@@ -20,7 +20,7 @@ import time
 import datetime
 from subprocess import call, check_output, CalledProcessError, STDOUT
 
-__version__ = '1.8.0'
+__version__ = '1.9.0'
 
 def parse_args():
 	"Parse the input arguments, use '-h' for help"
@@ -60,14 +60,17 @@ loci = [655112, 773487, 1804415, 1840727, 3640678, 270120, 102135, 316489, 41053
 		3996717, 2640029, 989024, 3806278, 1611156, 2348902, 1193220, 3694947, 955875,
 		3498544,2424394,2272144,561056,3164873,
 		751854,4680610,2587488,
-		4286788,3967063]
+		4286788,3967063,
+		2688285]
 
 snp_alleles = ['T', 'A', 'C', 'A', 'A', 'T', 'A', 'C', 'T', 'A', 'T', 'T', 'A', 'T', 'T', 'G', 'G', 'A', 'A', 'A', 'T',
 			   'A', 'T', 'A', 'A', 'A', 'A', 'T', 'C', 'A', 'C', 'A', 'A', 'A', 'T', 'T', 'T', 'T', 'G', 'C', 'A', 'T',
 			   'T', 'C', 'C', 'T', 'G', 'A', 'T', 'G', 'C', 'T', 'T', 'A', 'A', 'A', 'T', 'T', 'T', 'T', 'T', 'A', 'T',
 			   'A', 'T', 'A', 'A', 'T', 'C', 'G', 'A','G','A','A','A','A',
 			   'A','T','A',
-			   'T','T']
+			   'T','T',
+			   'T']
+
 groups = ['0.1', '0.0.1', '0.0.2', '0.0.3', '0.1.1', '0.1.2', '0.1.3', '1', '1.1', '1.1.1', '1.1.2', '1.1.3', '1.1.4',
 		  '1.2', '1.2.1', '2', '2.0.1', '2.0.2', '2.1', '2.1.1', '2.1.2', '2.1.3', '2.1.4', '2.1.5', '2.1.6', '2.1.7',
 		  '2.1.8', '2.1.9', '2.2', '2.2.1', '2.2.2', '2.2.3', '2.2.4', '2.3', '2.3.1', '2.3.2', '2.3.3', '2.3.4',
@@ -76,13 +79,14 @@ groups = ['0.1', '0.0.1', '0.0.2', '0.0.3', '0.1.1', '0.1.2', '0.1.3', '1', '1.1
 		  '4.2.1', '4.2.2', '4.2.3', '4.3.1', '4.3.1.1', '4.3.1.2', '4.3.1.1.P1',
 		  '3.3.2','3.3.2.Bd1','3.3.2.Bd2','4.3.1.3','2.5.2',
 		  '4.3.1.1.EA1','4.3.1.2.EA2','4.3.1.2.EA3',
-		  '2.1.7.1','2.1.7.2']
+		  '2.1.7.1','2.1.7.2',
+		  '4.3.1.3.Bdq']
 
 ### QRDR SNP definitions
 
-qrdr_loci = [523109, 523109, 2333762, 2333762, 2333750, 2333750, 2333751, 2333751, 3196469, 3196470, 3196458, 3196459]
-qrdr_snp_alleles = ['A' ,'T', 'A', 'T', 'A', 'C', 'A', 'T', 'T', 'A', 'C', 'T']
-qrdr_groups = [' acrB-R717L', ' acrB-R717Q', ' gyrA-S83F', ' gyrA-S83Y', ' gyrA-D87V', ' gyrA-D87G', ' gyrA-D87Y', ' gyrA-D87N', ' parC-S80R', ' parC-S80I', ' parC-E84G', ' parC-E84K']
+qrdr_loci = [523109, 523109, 2333762, 2333762, 2333750, 2333750, 2333751, 2333751,3810322, 3810322,3196469, 3196470, 3196458, 3196459]
+qrdr_snp_alleles = ['A' ,'T', 'A', 'T', 'A', 'C', 'A', 'T','A','T', 'T', 'A', 'C', 'T']
+qrdr_groups = [' acrB-R717L', ' acrB-R717Q', ' gyrA-S83F', ' gyrA-S83Y', ' gyrA-D87V', ' gyrA-D87G', ' gyrA-D87Y', ' gyrA-D87N', ' gyrB-S464Y', ' gyrB-S464F',' parC-S80R', ' parC-S80I', ' parC-E84G', ' parC-E84K']
 
 
 # check if this SNP defines a QRDR group
@@ -114,7 +118,7 @@ def checkQRDRSNP(vcf_line_split, this_qrdr_groups, qrdr_proportions, args):
 					qrdr_snp_proportion = float(-1)	# set unknowns to negative so that we know this is not a real proportion
 
 			qrdr_snp_allele = vcf_line_split[4]
-			for position in xrange(0,12):
+			for position in xrange(0,14):
 				if (qrdr_snp == qrdr_loci[position]) and (qrdr_snp_allele == qrdr_snp_alleles[position]) and (qrdr_snp_proportion > args.min_prop):
 					this_qrdr_groups.append(qrdr_groups[position])  # Add QRDR SNP
 
@@ -192,6 +196,8 @@ def parseGeno(this_groups, proportions):
 	# fix 4.3.1/4.3.1.1/4.3.1.2/4.3.1.P1/4.3.1.3/EA nesting
 	if ('4.3.1.3' in subclades) and ('4.3.1' in subclades):
 		subclades.remove('4.3.1')
+	if ('4.3.1.3.Bdq' in subclades) and ('4.3.1.3' in subclades):
+		subclades.remove('4.3.1.3')
 	if ('4.3.1.1' in subclades) and ('4.3.1' in subclades):
 		subclades.remove('4.3.1')
 	if('4.3.1.2' in subclades) and ('4.3.1' in subclades):
