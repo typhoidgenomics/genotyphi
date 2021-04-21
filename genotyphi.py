@@ -9,7 +9,7 @@
 # Dependencies:
 #	 SAMtools (v1.2) and bcftools (v1.2) are required to genotype from BAMs.
 #
-# Last modified - April 1st, 2021
+# Last modified - April 21st, 2021
 #
 
 from argparse import (ArgumentParser, FileType)
@@ -20,7 +20,7 @@ import time
 import datetime
 from subprocess import call, check_output, CalledProcessError, STDOUT
 
-__version__ = '1.9.0'
+__version__ = '1.9.1'
 
 def parse_args():
 	"Parse the input arguments, use '-h' for help"
@@ -270,7 +270,7 @@ def parseGeno(this_groups, proportions):
 
 	# fix 3.5.3, 3.5.4 nesting
 	if ('3.5.3' in clades) and ('3.5.4' in clades):
-		clades.remove('3.5.3')
+		clades.remove('3.5.4')
 
 	# fix subclades relative to CT18:
 	if '3.2.1' in subclades:
