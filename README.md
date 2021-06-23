@@ -22,7 +22,7 @@ The GenoTyphi scheme is also available via the online analysis platform [Pathoge
 
 ### Installing mykrobe
 
-To use the Typhi panel, you need to install mykrobe from source (using pip), as the Typhi panel hasn't been incorporated into a full release yet (and so the conda instructions on the mykrobe installation page won't work). In the example below I have installed from source within a conda environment - if you don't want to create a conda environment, just skip to the third line.
+To use the Typhi panel, you need to install mykrobe from source (using pip), as the Typhi panel hasn't been incorporated into a full release yet (and so the conda instructions on the mykrobe installation page won't work). In the example below we have installed from source within a conda environment - if you don't want to create a conda environment, just skip to the third line.
 
 ```
 conda create mykrobe
@@ -81,14 +81,14 @@ python parse_typhi_mykrobe.py --jsons *.json --prefix mykrobe_out
 
 ### Explanation of columns in the output:
 * **genome**: sample ID
-* **species**: species call from Mykrobe (typhi or unknown; determined by matching to Typhi STs from the 7-locus MLST scheme)
+* **species**: species call from Mykrobe (Typhi or unknown; determined by matching to Typhi STs from the 7-locus MLST scheme)
 * **spp_percent:** percentage coverage to the Typhi ST probes
-* **final genotype**: final genotype call from Mykrobe, using the scheme currently implemented in Genotyphi.
+* **final genotype**: final genotype call from Mykrobe, using the latest version of GenoTyphi
 * **confidence**: measure of confidence in the final genotype call, summarising read support across all levels in the hierarchy (lineage, clade, subclade, etc)
   * _strong_ - high quality calls (quality of '1' reported by Mykrobe) for ALL levels;
   * _moderate_ - reduced confidence for ONE node (Mykrobe quality of '0.5', but still with >50% read support for the marker allele), high quality calls for ALL OTHERS;
   * _weak_ - low quality for one or more nodes (Mykrobe quality of '0.5' and <50% read support OR Mykrobe quality of '0').
-* **acrB_R717L, acrB_7171Q**: calls for individual acrB (azithromycin resistance) mutation. 0 indicates mutation is absent, 1 indicates mutation is present.
+* **acrB_R717L, acrB_7171Q**: calls for individual *acrB* (azithromycin resistance) mutation. 0 indicates mutation is absent, 1 indicates mutation is present.
 * **num QRDR**: Total number of mutations detected in the quinolone-resistance determining regions (QRDR) of genes _gyrA_, _parC_ and _gyrB_.
 * **lowest support for genotype marker**: For any markers in the final genotype call that do not have a Mykrobe quality of '1', this column reports the percentage of reads supporting the marker allele at the most poorly supported marker (details of all such markers appear in the 'poorly supported markers column').
 * **poorly supported markers**: Lists any markers in the final genotype call that do not have Mykrobe quality of '1'. Markers are separated by ';', values in brackets represent the quality call from Mykrobe, followed by the read depth at the alternate / reference alleles. The lowest read support amongst these markers is reported in the previous column.
