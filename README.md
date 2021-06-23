@@ -9,6 +9,8 @@ The orignal genotyping method is also summarised in [this blog post](https://hol
 
 Subsequent updates to the genotyping scheme are summarised in [this preprint](https://www.biorxiv.org/content/10.1101/2021.04.28.441766v1) and below.
 
+[![DOI](https://zenodo.org/badge/45819844.svg)](https://zenodo.org/badge/latestdoi/45819844)
+
 #### Additional features & citations
 
 An updated version of the code that **detects QRDR mutations, and genotypes H58 lineages 4.3.1.1, 4.3.1.2 and 4.3.1.3** and sublineages 4.3.1.1.EA1, 4.3.1.2.EA2, 4.3.1.2.EA3, and 4.3.1.3.Bdq was developed and described in the papers ["Laboratory and Molecular Surveillance of Paediatric Typhoidal Salmonella in Nepal: Antimicrobial Resistance and Implications for Vaccine Policy"](https://journals.plos.org/plosntds/article?rev=1&id=10.1371/journal.pntd.0006408), Britto et al 2018, PLoS NTDs ["Population structure and antimicrobial resistance patterns of Salmonella Typhi isolates in Bangladesh from 2004 to 2016"](https://journals.plos.org/plosntds/article?rev=1&id=10.1371/journal.pntd.0006408), Rahman et al 2020, PLoS NTDs, and ["Multiple introductions of multidrug-resistant typhoid associated with acute infection and asymptomatic carriage, Kenya"](https://www.biorxiv.org/content/10.1101/2021.03.10.434750v1), biorxiv. Please cite all these in addition to the [primary paper](http://www.nature.com/articles/ncomms12827/) if you report genotyphi-inferred QRDR mutations and/or H58 sublineages 1,2,3 (ie 4.3.1.1, 4.3.1.2, 4.3.1.3) and East African H58 sublineages (4.3.1.1.EA1, 4.3.1.2.EA2, and 4.3.1.2.EA3). 
