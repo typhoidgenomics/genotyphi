@@ -1,6 +1,6 @@
 # genotyphi
 
-The GenoTyphi genotyping scheme divides the *Salmonella* Typhi population into 4 major lineages, and >50 different clades and subclades. 
+The GenoTyphi genotyping scheme divides the *Salmonella* Typhi population into 4 major lineages, and >75 different clades and subclades. The scheme specification is detailed in the file 'Genotype_specification.csv' in this repository, which also includes the standard clade-level colour codes that we use for consistency across papers.
 
 The scheme is described in this paper, **which serves as the primary citation for the scheme**: ["An extended genotyping framework for Salmonella enterica serovar Typhi, the cause of human typhoid", Wong et al, 2016, Nature Communications](http://www.nature.com/articles/ncomms12827/).
 
@@ -8,9 +8,9 @@ Subsequent updates to the genotyping scheme are summarised in [this preprint](ht
 
 Two implementations of the code that can assign genotypes to Typhi genomes are available in this repo:
 
-* [Mykrobe implementation](https://github.com/katholt/genotyphi/blob/main/README.md#mykrobe-implementation), which takes as input **sequence reads (fastq files)** from Illumina or long-read platforms. It also detects acquired antimicrobial resistance genes; plasmid replicons and major subtypes of the IncHI1 plasmid typically associated with multidrug resistance; known mutations in the quinolone-resistance determining region (QRDR) of genes *gyrA*, *gyrB* and *parC*; and the *acrB*-R717Q/L mutations associated with azithromycin resistance.
+* [Mykrobe implementation](https://github.com/katholt/genotyphi/blob/main/README.md#mykrobe-implementation), which takes as input **sequence reads (fastq files)** from Illumina or long-read platforms. It also detects acquired antimicrobial resistance genes; plasmid replicons and major subtypes of the IncHI1 plasmid typically associated with multidrug resistance; known mutations in the quinolone-resistance determining region (QRDR) of genes *gyrA*, *gyrB* and *parC*; and the *acrB*-R717Q/L mutations associated with azithromycin resistance (AMR SNVs are listed in 'AMR_mutation_alleles.csv' in this repository).
 
-* [Original Python implementation](https://github.com/katholt/genotyphi/blob/main/README.md#original-implementation-pre-mapped-data), which takes as input **BAM or VCF files that the user has already generated** by mapping Illumina reads to the reference genome CT18. It also detects the QRDR and acrB mutations.
+* [Original Python implementation](https://github.com/katholt/genotyphi/blob/main/README.md#original-implementation-pre-mapped-data), which takes as input **BAM or VCF files that the user has already generated** by mapping Illumina reads to the reference genome CT18. It also detects the QRDR and acrB mutations listed in 'AMR_mutation_alleles.csv' in this repository.
 
 The GenoTyphi scheme is also available via the online analysis platform [Pathogenwatch](https://pathogen.watch/), which facilitates automated analysis of Typhi genomic reads or assemblies as described in [this paper](https://www.nature.com/articles/s41467-021-23091-2).
 
