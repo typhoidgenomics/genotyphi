@@ -8,9 +8,9 @@ Subsequent updates to the genotyping scheme are summarised in [this preprint](ht
 
 Two implementations of the code that can assign genotypes to Typhi genomes are available in this repo:
 
-* Mykrobe implementation, which takes as input **sequence reads (fastq files)** from Illumina or long-read platforms. It also detects acquired antimicrobial resistance genes; plasmid replicons and major subtypes of the IncHI1 plasmid typically associated with multidrug resistance; known mutations in the quinolone-resistance determining region (QRDR) of genes *gyrA*, *gyrB* and *parC*; and the *acrB*-R717Q/L mutations associated with azithromycin resistance.
+* [Mykrobe implementation](https://github.com/katholt/genotyphi/blob/main/README.md#mykrobe-implementation), which takes as input **sequence reads (fastq files)** from Illumina or long-read platforms. It also detects acquired antimicrobial resistance genes; plasmid replicons and major subtypes of the IncHI1 plasmid typically associated with multidrug resistance; known mutations in the quinolone-resistance determining region (QRDR) of genes *gyrA*, *gyrB* and *parC*; and the *acrB*-R717Q/L mutations associated with azithromycin resistance.
 
-* Original Python implementation, which takes as input **BAM or VCF files that the user has already generated** by mapping Illumina reads to the reference genome CT18. It also detects the QRDR and acrB mutations.
+* [Original Python implementation](https://github.com/katholt/genotyphi/blob/main/README.md#original-implementation-pre-mapped-data), which takes as input **BAM or VCF files that the user has already generated** by mapping Illumina reads to the reference genome CT18. It also detects the QRDR and acrB mutations.
 
 The GenoTyphi scheme is also available via the online analysis platform [Pathogenwatch](https://pathogen.watch/), which facilitates automated analysis of Typhi genomic reads or assemblies as described in [this paper](https://www.nature.com/articles/s41467-021-23091-2).
 
