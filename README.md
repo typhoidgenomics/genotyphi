@@ -22,7 +22,7 @@ The GenoTyphi scheme is also available via the online analysis platform [Pathoge
 
 ### Installing mykrobe
 
-To use the Typhi panel, you need to install mykrobe from source (using pip), as the Typhi panel hasn't been incorporated into a full release yet (and so the conda instructions on the mykrobe installation page won't work). In the example below we have installed from source within a conda environment - if you don't want to create a conda environment, just skip to the third line.
+To use the [Typhi panel](https://doi.org/10.26180/14881701.v1), you need to install mykrobe from source (using pip), as the Typhi panel hasn't been incorporated into a full release yet (and so the conda instructions on the mykrobe installation page won't work). In the example below we have installed from source within a conda environment - if you don't want to create a conda environment, just skip to the third line.
 
 ```
 conda create mykrobe
