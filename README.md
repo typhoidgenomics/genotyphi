@@ -99,6 +99,8 @@ python parse_typhi_mykrobe.py --jsons *.json --prefix mykrobe_out
 * **remaining columns** indicate presence (1) or absence (0) of each AMR gene or plasmid replicon as indicated by the header of the column. For the AMR genes, _specific alleles are **not detected**_ (with the exception of dfrA, where Mykrobe can distinguish between dfrA7, dfrA5 and dfrA15).
   * **IncHI1_ST6** indicates whether the IncHI1 replicon (from column IncHI1BR27) is pST6 (1) or not (0).
 
+Sequences and details of probes are available [here](https://doi.org/10.26180/14881701.v1).
+
 
 ## Original Implementation (pre-mapped data)
 
