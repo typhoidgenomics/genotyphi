@@ -22,17 +22,18 @@ The GenoTyphi scheme is also available via the online analysis platform [Pathoge
 
 ### Installing mykrobe
 
-To use the [Typhi panel](https://doi.org/10.26180/14881701.v1), you need to install mykrobe from source (using pip), as the Typhi panel hasn't been incorporated into a full release yet (and so the conda instructions on the mykrobe installation page won't work). In the example below we have installed from source within a conda environment - if you don't want to create a conda environment, just skip to the third line.
+First, install Mykrobe (v0.10.0+) as per the instructions on the [Mykrobe github](https://github.com/Mykrobe-tools/mykrobe).
 
+Once Mykrobe is installed, you can run the following two commands to ensure you have the most up-to-date panels for genotyping, including teh [Typhi panel](https://doi.org/10.26180/14881701.v1):
 ```
-conda create mykrobe
-conda activate mykrobe
-git clone https://github.com/Mykrobe-tools/mykrobe
-cd mykrobe
-pip3 install . && mykrobe panels update_metadata && mykrobe panels update_species all
+mykrobe panels update_metadata
+mykrobe panels update_species_all
 ```
 
-You may run into issues with the dependency `mccortex`, please see the documentation on the Mykrobe wiki for more detailed instructions https://github.com/Mykrobe-tools/mykrobe/wiki/Installation#from-source
+You can check what version of the scheme is currently loaded in your Mykrobe installation via:
+```
+mykrobe panels describe
+```
 
 ### Running mykrobe
 
