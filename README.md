@@ -4,7 +4,7 @@ The GenoTyphi genotyping scheme divides the *Salmonella* Typhi population into 4
 
 The scheme is described in this paper, **which serves as the primary citation for the scheme**: ["An extended genotyping framework for Salmonella enterica serovar Typhi, the cause of human typhoid", Wong et al, 2016, Nature Communications](http://www.nature.com/articles/ncomms12827/).
 
-Subsequent updates to the genotyping scheme are summarised in [this preprint](https://www.biorxiv.org/content/10.1101/2021.04.28.441766v1) and below.
+Subsequent updates to the genotyping scheme are summarised in [this paper](https://doi.org/10.1093/infdis/jiab414) and below.
 
 Two implementations of the code that can assign genotypes to Typhi genomes are available in this repo:
 
