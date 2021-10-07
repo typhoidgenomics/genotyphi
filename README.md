@@ -4,7 +4,7 @@ The GenoTyphi genotyping scheme divides the *Salmonella* Typhi population into 4
 
 The scheme is described in this paper, **which serves as the primary citation for the scheme**: ["An extended genotyping framework for Salmonella enterica serovar Typhi, the cause of human typhoid", Wong et al, 2016, Nature Communications](http://www.nature.com/articles/ncomms12827/).
 
-Subsequent updates to the genotyping scheme are summarised in [this paper](https://doi.org/10.1093/infdis/jiab414) and below.
+Subsequent updates to the genotyping scheme, including new genotypes and mutations conferring resistance to fluoroquinolones and azithromycin, are summarised in ["Five years of GenoTyphi: updates to the global Salmonella Typhi genotyping framework", Dyson & Holt, 2021, Journal of Infectious Diseases](https://doi.org/10.1093/infdis/jiab414).
 
 Two implementations of the code that can assign genotypes to Typhi genomes are available in this repo:
 
