@@ -24,7 +24,7 @@ The GenoTyphi scheme is also available via the online analysis platform [Pathoge
 
 First, install Mykrobe (v0.10.0+) as per the instructions on the [Mykrobe github](https://github.com/Mykrobe-tools/mykrobe).
 
-Once Mykrobe is installed, you can run the following two commands to ensure you have the most up-to-date panels for genotyping, including teh [Typhi panel](https://doi.org/10.26180/14881701.v1):
+Once Mykrobe is installed, you can run the following two commands to ensure you have the most up-to-date panels for genotyping, including the [Typhi panel](https://doi.org/10.26180/14881701.v1):
 ```
 mykrobe panels update_metadata
 mykrobe panels update_species all
@@ -34,6 +34,16 @@ You can check what version of the scheme is currently loaded in your Mykrobe ins
 ```
 mykrobe panels describe
 ```
+
+While the above description will guarantee up-to-date versions of both mykrobe and the genotyphi panel for mykrobe, it may be difficult or confusing if you are not familiar with docker. 
+
+If you are not familiar with docker, you can install a version of mykrobe which is pre-configured for Typhi by running:
+
+```
+docker pull flashton/mykrobe_for_typhi:latest
+```
+
+The version of mykrobe inside this container is `mykrobe:0.10.0--py39h98c8e45_0`, and the genotyphi catalogue it uses was downloaded on 2021-11-11.
 
 ### Running mykrobe
 
@@ -48,6 +58,15 @@ mykrobe predict --sample aSample --species typhi --format json --out aSample.jso
 To run on ONT data instead, add the `--ont` flag to your command.
 
 Further details on options can be found on the Mykrobe wiki: https://github.com/Mykrobe-tools/mykrobe/wiki
+
+If you are running the version of mykrobe from `flashton/mykrobe_for_typhi:latest`, you can run mykrobe on your Typhi data with a single command. For example:
+
+```
+docker run --rm -v /path/to/your/data:/data flashton/mykrobe_for_typhi:latest mykrobe predict --sample aSample --species typhi --format json --out /data/aSample.json --seq /data/my_fastq.gz --ont
+```
+
+Note that `my_fastq.gz` has to be inside the `/path/to/your/data` directory for this command to work.
+
 
 ### Parse mykrobe output
 
