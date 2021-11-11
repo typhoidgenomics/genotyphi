@@ -27,7 +27,7 @@ First, install Mykrobe (v0.10.0+) as per the instructions on the [Mykrobe github
 Once Mykrobe is installed, you can run the following two commands to ensure you have the most up-to-date panels for genotyping, including teh [Typhi panel](https://doi.org/10.26180/14881701.v1):
 ```
 mykrobe panels update_metadata
-mykrobe panels update_species_all
+mykrobe panels update_species all
 ```
 
 You can check what version of the scheme is currently loaded in your Mykrobe installation via:
