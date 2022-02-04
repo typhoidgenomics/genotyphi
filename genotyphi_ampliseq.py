@@ -52,35 +52,13 @@ def parse_args():
 
 ### Genotype SNP definitions
 
-loci = [655112, 773487, 1804415, 1840727, 3640678, 270120, 102135, 316489, 4105384, 555826, 2360997, 4664137, 2166082,
-		30192, 4288272, 2737027, 1215983, 4132985, 146673, 2517324, 3920009, 3276735, 1173984, 2683312, 4013386,
-		4094437, 827036, 3476114, 4355243, 2723847, 4388609, 703762, 431216, 3095443, 316186, 1934711, 2811222, 3092900,
-		2723724, 3437570, 1780319, 1535365, 1792810, 3062270, 1799842, 432732, 3069182, 2732615, 3770391, 2269835,
-		4215341, 4602946, 3368641, 2245432, 3164162, 3923165, 1811809, 3729635, 3817752, 183033, 1615350, 2342045,
-		3996717, 2640029, 989024, 3806278, 1611156, 2348902, 1193220, 3694947, 955875,
-		3498544,2424394,2272144,561056,3164873,
-		751854,4680610,2587488,
-		4286788,3967063,
-		2688285]
+loci = [773487, 1804415, 1840727, 655112, 316489, 2737027, 3062270, 2732615, 3498544, 1615350, 2348902, 1193220, 955875, 
+		3694947, 561056]
 
-snp_alleles = ['T', 'A', 'C', 'A', 'A', 'T', 'A', 'C', 'T', 'A', 'T', 'T', 'A', 'T', 'T', 'G', 'G', 'A', 'A', 'A', 'T',
-			   'A', 'T', 'A', 'A', 'A', 'A', 'T', 'C', 'A', 'C', 'A', 'A', 'A', 'T', 'T', 'T', 'T', 'G', 'C', 'A', 'T',
-			   'T', 'C', 'C', 'T', 'G', 'A', 'T', 'G', 'C', 'T', 'T', 'A', 'A', 'A', 'T', 'T', 'T', 'T', 'T', 'A', 'T',
-			   'A', 'T', 'A', 'A', 'T', 'C', 'G', 'A','G','A','A','A','A',
-			   'A','T','A',
-			   'T','T',
-			   'T']
+snp_alleles = ['A', 'C', 'A', 'T', 'C', 'G', 'C', 'A', 'G', 'T', 'T', 'C', 'A', 'G', 'A']
 
-groups = ['0.1', '0.0.1', '0.0.2', '0.0.3', '0.1.1', '0.1.2', '0.1.3', '1', '1.1', '1.1.1', '1.1.2', '1.1.3', '1.1.4',
-		  '1.2', '1.2.1', '2', '2.0.1', '2.0.2', '2.1', '2.1.1', '2.1.2', '2.1.3', '2.1.4', '2.1.5', '2.1.6', '2.1.7',
-		  '2.1.8', '2.1.9', '2.2', '2.2.1', '2.2.2', '2.2.3', '2.2.4', '2.3', '2.3.1', '2.3.2', '2.3.3', '2.3.4',
-		  '2.3.5', '2.4', '2.4.1', '2.5', '2.5.1', '3', '3.0.1', '3.0.2', '3.1', '3.1.1', '3.1.2', '3.2', '3.2.1',
-		  '3.2.2', '3.3', '3.3.1', '3.4', '3.5', '3.5.1', '3.5.2', '3.5.3', '3.5.4', '4', '4.1', '4.1.1', '4.2',
-		  '4.2.1', '4.2.2', '4.2.3', '4.3.1', '4.3.1.1', '4.3.1.2', '4.3.1.1.P1',
-		  '3.3.2','3.3.2.Bd1','3.3.2.Bd2','4.3.1.3','2.5.2',
-		  '4.3.1.1.EA1','4.3.1.2.EA2','4.3.1.2.EA3',
-		  '2.1.7.1','2.1.7.2',
-		  '4.3.1.3.Bdq']
+groups = ['0.0.1', '0.0.2', '0.0.3', '0.1', '1', '2', '3', '3.1.1', '3.3.2', '4', '4.3.1', 
+			'4.3.1.1', '4.3.1.1.P1', '4.3.1.2', '4.3.1.3']
 
 ### QRDR SNP definitions
 
@@ -196,8 +174,6 @@ def parseGeno(this_groups, proportions):
 	# fix 4.3.1/4.3.1.1/4.3.1.2/4.3.1.P1/4.3.1.3/EA nesting
 	if ('4.3.1.3' in subclades) and ('4.3.1' in subclades):
 		subclades.remove('4.3.1')
-	if ('4.3.1.3.Bdq' in subclades) and ('4.3.1.3' in subclades):
-		subclades.remove('4.3.1.3')
 	if ('4.3.1.1' in subclades) and ('4.3.1' in subclades):
 		subclades.remove('4.3.1')
 	if('4.3.1.2' in subclades) and ('4.3.1' in subclades):
@@ -206,46 +182,50 @@ def parseGeno(this_groups, proportions):
         subclades.remove('4.3.1')
     if('4.3.1.1.P1' in subclades) and ('4.3.1.1' in subclades):
         subclades.remove('4.3.1.1')
-	if('4.3.1.1.EA1' in subclades) and ('4.3.1.1' in subclades):
-		subclades.remove('4.3.1.1')
-	if('4.3.1.1.EA1' in subclades) and ('4.3.1' in subclades):
-		subclades.remove('4.3.1')
-	if('4.3.1.2.EA2' in subclades) and ('4.3.1.2' in subclades):
-		subclades.remove('4.3.1.2')
-	if('4.3.1.2.EA2' in subclades) and ('4.3.1' in subclades):
-		subclades.remove('4.3.1')
-	if('4.3.1.2.EA3' in subclades) and ('4.3.1.2' in subclades):
-		subclades.remove('4.3.1.2')
-	if('4.3.1.2.EA3' in subclades) and ('4.3.1' in subclades):
-		subclades.remove('4.3.1')
+
+# removed these as the EA1, EA2, EA3, Bdq subgroup SNPs are not yet targeted
+#	if('4.3.1.1.EA1' in subclades) and ('4.3.1.1' in subclades):
+#		subclades.remove('4.3.1.1')
+#	if('4.3.1.1.EA1' in subclades) and ('4.3.1' in subclades):
+#		subclades.remove('4.3.1')
+#	if('4.3.1.2.EA2' in subclades) and ('4.3.1.2' in subclades):
+#		subclades.remove('4.3.1.2')
+#	if('4.3.1.2.EA2' in subclades) and ('4.3.1' in subclades):
+#		subclades.remove('4.3.1')
+#	if('4.3.1.2.EA3' in subclades) and ('4.3.1.2' in subclades):
+#		subclades.remove('4.3.1.2')
+#	if('4.3.1.2.EA3' in subclades) and ('4.3.1' in subclades):
+#		subclades.remove('4.3.1')
+#	if ('4.3.1.3.Bdq' in subclades) and ('4.3.1.3' in subclades):
+#		subclades.remove('4.3.1.3')
 
 	# fix 3.3.2.Bd nesting
-	if ('3.3.2.Bd1' in subclades) and ('3.3.2' in subclades):
-		subclades.remove('3.3.2')
-	if ('3.3.2.Bd2' in subclades) and ('3.3.2' in subclades):
-		subclades.remove('3.3.2')
+#	if ('3.3.2.Bd1' in subclades) and ('3.3.2' in subclades):
+#		subclades.remove('3.3.2')
+#	if ('3.3.2.Bd2' in subclades) and ('3.3.2' in subclades):
+#		subclades.remove('3.3.2')
 
-	# fix 2.1.7/2.1.7.1/2.1.7.2 nesting
-	if ('2.1.7.1' in subclades) and ('2.1.7' in subclades):
-		subclades.remove('2.1.7')
-	if ('2.1.7.2' in subclades) and ('2.1.7' in subclades):
-		subclades.remove('2.1.7')
+#	# fix 2.1.7/2.1.7.1/2.1.7.2 nesting
+#	if ('2.1.7.1' in subclades) and ('2.1.7' in subclades):
+#		subclades.remove('2.1.7')
+#	if ('2.1.7.2' in subclades) and ('2.1.7' in subclades):
+#		subclades.remove('2.1.7')
 
-	# fix 2.3, 2.2 nesting
-	if ('2.2' in clades) and ('2.3' in clades):
-		clades.remove('2.2')
+#	# fix 2.3, 2.2 nesting
+#	if ('2.2' in clades) and ('2.3' in clades):
+#		clades.remove('2.2')
 
 	# fix 3.5.3, 3.5.4 nesting
-	if ('3.5.3' in subclades) and ('3.5.4' in subclades):
-		subclades.remove('3.5.3')
+#	if ('3.5.3' in subclades) and ('3.5.4' in subclades):
+#		subclades.remove('3.5.3')
 
 	# fix 2.3.1, 2.3.3 nesting
-	if ('2.3.1' in subclades) and ('2.3.2' in subclades):
-		subclades.remove('2.3.2')
+#	if ('2.3.1' in subclades) and ('2.3.2' in subclades):
+#		subclades.remove('2.3.2')
 
 	# fix 2.3.1, 2.3.3 nesting
-	if ('2.3.5' in subclades) and ('2.3.3' in subclades):
-		subclades.remove('2.3.3')
+#	if ('2.3.5' in subclades) and ('2.3.3' in subclades):
+#		subclades.remove('2.3.3')
 
 	# fix primary clades relative to CT18 = 3.2.1, ie has clade1, clade2, clade3 SNPs
 	if len(primary) == 1:
@@ -262,22 +242,22 @@ def parseGeno(this_groups, proportions):
 			primary = ['0']
 
 	# fix clade relative to CT18:
-	if '3.2' in clades:
-		clades.remove('3.2')  # anything NOT in 3.2 will have this SNP
-	else:
-		if len(clades) == 0:
-			clades.append('3.2')  # anything with no clade, and 3.2 SNP not called, belongs in 3.2 with CT18
+#	if '3.2' in clades:
+#		clades.remove('3.2')  # anything NOT in 3.2 will have this SNP
+#	else:
+#		if len(clades) == 0:
+#			clades.append('3.2')  # anything with no clade, and 3.2 SNP not called, belongs in 3.2 with CT18
 
 	# fix subclades relative to CT18:
-	if '3.2.1' in subclades:
-		subclades.remove('3.2.1')  # anything NOT in 3.2.1 will have this SNP
-	else:
-		if len(subclades) == 0:
-			subclades.append('3.2.1')  # anything with no subclade, and 3.2.1 SNP NOT called, belongs in 3.2.1 with CT18
+#	if '3.2.1' in subclades:
+#		subclades.remove('3.2.1')  # anything NOT in 3.2.1 will have this SNP
+#	else:
+#		if len(subclades) == 0:
+#			subclades.append('3.2.1')  # anything with no subclade, and 3.2.1 SNP NOT called, belongs in 3.2.1 with CT18
 
 	# fix 3.5.3, 3.5.4 nesting (3.5.3 is nested within 3.5.4)
-	if ('3.5.3' in clades) and ('3.5.4' in clades):
-		clades.remove('3.5.4')
+#	if ('3.5.3' in clades) and ('3.5.4' in clades):
+#		clades.remove('3.5.4')
 
 	# store final genotype, to the lowest level available
 	final_geno = primary[0]
