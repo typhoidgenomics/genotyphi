@@ -14,7 +14,7 @@ Two implementations of the code that can assign genotypes to Typhi genomes are a
 
 The GenoTyphi scheme is also available via the online analysis platform [Pathogenwatch](https://pathogen.watch/), which facilitates automated analysis of Typhi genomic reads or assemblies as described in [this paper](https://www.nature.com/articles/s41467-021-23091-2).
 
-**Whichever tool you use to access the GenoTyphi scheme, please cite the [GenoTyphi paper](http://www.nature.com/articles/ncomms12827/).**
+**Whichever tool you use to access the GenoTyphi scheme, please cite the [GenoTyphi paper](https://doi.org/10.1093/infdis/jiab414).**
 
 **If you use the scripts in this repository, please also cite the repository:** [![DOI](https://zenodo.org/badge/45819844.svg)](https://zenodo.org/badge/latestdoi/45819844)
 
@@ -24,7 +24,7 @@ The GenoTyphi scheme is also available via the online analysis platform [Pathoge
 
 First, install Mykrobe (v0.10.0+) as per the instructions on the [Mykrobe github](https://github.com/Mykrobe-tools/mykrobe).
 
-Once Mykrobe is installed, you can run the following two commands to ensure you have the most up-to-date panels for genotyping, including teh [Typhi panel](https://doi.org/10.26180/14881701.v1):
+Once Mykrobe is installed, you can run the following two commands to ensure you have the most up-to-date panels for genotyping, including the [Typhi panel](https://doi.org/10.26180/14881701.v1):
 ```
 mykrobe panels update_metadata
 mykrobe panels update_species all
