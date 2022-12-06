@@ -9,7 +9,7 @@
 # Dependencies:
 #	 SAMtools (v1.2) and bcftools (v1.2) are required to genotype from BAMs.
 #
-# Last modified - April 21st, 2021
+# Last modified - November 16th, 2022
 #
 
 from argparse import (ArgumentParser, FileType)
@@ -20,7 +20,7 @@ import time
 import datetime
 from subprocess import call, check_output, CalledProcessError, STDOUT
 
-__version__ = '1.9.1'
+__version__ = '1.9.2'
 
 def parse_args():
 	"Parse the input arguments, use '-h' for help"
@@ -61,7 +61,9 @@ loci = [655112, 773487, 1804415, 1840727, 3640678, 270120, 102135, 316489, 41053
 		3498544,2424394,2272144,561056,3164873,
 		751854,4680610,2587488,
 		4286788,3967063,
-		2688285]
+		2688285,
+		1806478,131973,
+		3960783,1731534,295362]
 
 snp_alleles = ['T', 'A', 'C', 'A', 'A', 'T', 'A', 'C', 'T', 'A', 'T', 'T', 'A', 'T', 'T', 'G', 'G', 'A', 'A', 'A', 'T',
 			   'A', 'T', 'A', 'A', 'A', 'A', 'T', 'C', 'A', 'C', 'A', 'A', 'A', 'T', 'T', 'T', 'T', 'G', 'C', 'A', 'T',
@@ -69,7 +71,9 @@ snp_alleles = ['T', 'A', 'C', 'A', 'A', 'T', 'A', 'C', 'T', 'A', 'T', 'T', 'A', 
 			   'A', 'T', 'A', 'A', 'T', 'C', 'G', 'A','G','A','A','A','A',
 			   'A','T','A',
 			   'T','T',
-			   'T']
+			   'T',
+			   'G','T',
+			   'A','T','T']
 
 groups = ['0.1', '0.0.1', '0.0.2', '0.0.3', '0.1.1', '0.1.2', '0.1.3', '1', '1.1', '1.1.1', '1.1.2', '1.1.3', '1.1.4',
 		  '1.2', '1.2.1', '2', '2.0.1', '2.0.2', '2.1', '2.1.1', '2.1.2', '2.1.3', '2.1.4', '2.1.5', '2.1.6', '2.1.7',
@@ -80,7 +84,9 @@ groups = ['0.1', '0.0.1', '0.0.2', '0.0.3', '0.1.1', '0.1.2', '0.1.3', '1', '1.1
 		  '3.3.2','3.3.2.Bd1','3.3.2.Bd2','4.3.1.3','2.5.2',
 		  '4.3.1.1.EA1','4.3.1.2.EA2','4.3.1.2.EA3',
 		  '2.1.7.1','2.1.7.2',
-		  '4.3.1.3.Bdq']
+		  '4.3.1.3.Bdq',
+		  '4.3.1.2.1','4.3.1.2.1.1',
+		  '3.5.4.1','3.5.4.2','3.5.4.3']
 
 ### QRDR SNP definitions
 
@@ -182,8 +188,10 @@ def parseGeno(this_groups, proportions):
 	primary = []
 	for group in this_groups:
 		level = len(group.split("."))
-        if level == 5:
-            subclades.append(group)
+                if level == 6:
+                        subclades.append(group)
+        	if level == 5:
+            		subclades.append(group)
 		if level == 4:
 			subclades.append(group)
 		if level == 3:
@@ -193,7 +201,7 @@ def parseGeno(this_groups, proportions):
 		elif level == 1:
 			primary.append(group)
 
-	# fix 4.3.1/4.3.1.1/4.3.1.2/4.3.1.P1/4.3.1.3/EA nesting
+	# fix 4.3.1 nesting
 	if ('4.3.1.3' in subclades) and ('4.3.1' in subclades):
 		subclades.remove('4.3.1')
 	if ('4.3.1.3.Bdq' in subclades) and ('4.3.1.3' in subclades):
@@ -202,10 +210,14 @@ def parseGeno(this_groups, proportions):
 		subclades.remove('4.3.1')
 	if('4.3.1.2' in subclades) and ('4.3.1' in subclades):
 		subclades.remove('4.3.1')
-    if('4.3.1.1.P1' in subclades) and ('4.3.1' in subclades):
-        subclades.remove('4.3.1')
-    if('4.3.1.1.P1' in subclades) and ('4.3.1.1' in subclades):
-        subclades.remove('4.3.1.1')
+        if('4.3.1.2.1' in subclades) and ('4.3.1.2' in subclades):
+                subclades.remove('4.3.1.2')
+        if('4.3.1.2.1.1' in subclades) and ('4.3.1.2.1' in subclades):
+                subclades.remove('4.3.1.2.1')
+        if('4.3.1.1.P1' in subclades) and ('4.3.1' in subclades):
+        	subclades.remove('4.3.1')
+        if('4.3.1.1.P1' in subclades) and ('4.3.1.1' in subclades):
+        	subclades.remove('4.3.1.1')
 	if('4.3.1.1.EA1' in subclades) and ('4.3.1.1' in subclades):
 		subclades.remove('4.3.1.1')
 	if('4.3.1.1.EA1' in subclades) and ('4.3.1' in subclades):
@@ -238,6 +250,12 @@ def parseGeno(this_groups, proportions):
 	# fix 3.5.3, 3.5.4 nesting
 	if ('3.5.3' in subclades) and ('3.5.4' in subclades):
 		subclades.remove('3.5.3')
+	if ('3.5.4.1' in subclades) and ('3.5.4' in subclades):
+                subclades.remove('3.5.4')
+        if ('3.5.4.2' in subclades) and ('3.5.4' in subclades):
+                subclades.remove('3.5.4')
+        if ('3.5.4.3' in subclades) and ('3.5.4' in subclades):
+                subclades.remove('3.5.4')
 
 	# fix 2.3.1, 2.3.3 nesting
 	if ('2.3.1' in subclades) and ('2.3.2' in subclades):
