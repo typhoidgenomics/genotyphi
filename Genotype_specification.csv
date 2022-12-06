@@ -68,6 +68,9 @@
 3.5.2,No,STY3874,glutamine synthetase,3729635,G,T,T,G,#4b0082,Wong et al. 2016
 3.5.3,No,STY3949,hypothetical protein,3817752,C,T,T,C,#4b0082,Wong et al. 2016
 3.5.4,No,STY0176,dihydrolipoamide acetyltransferase component (E2) of pyruvate dehydrogenase,183033,C,T,T,C,#4b0082,Wong et al. 2016
+3.5.4.1,No,STY4102,Putative l-lactate dehydrogenase,3960783,G,A,A,G,#4b0082,Sikorski et al. 2022
+3.5.4.2,No,STY1812,Exodeoxyribonuclease III,1731534,C,T,T,C,#7b2ab7,Sikorski et al. 2022
+3.5.4.3,No,STY0278,Putative drug efflux protein,295362,C,T,T,C,#aa73d3,Sikorski et al. 2022
 4.1.1,No,STY4134,alpha-amylase,3996717,C,T,T,C,#8b0000,Wong et al. 2016
 4.2.1,No,STY0994,killing factor KicB,989024,C,T,T,C,#ff6347,Wong et al. 2016
 4.2.2,No,STY3940,chromosomal replication initiator protein,3806278,G,A,A,G,#ff6347,Wong et al. 2016
@@ -77,6 +80,8 @@
 4.3.1.1.EA1,Yes,STY0750,PTR2-family transport protein,751854,G,A,A,G,#f1b6da,Kariuki et al. 2021
 4.3.1.1.P1,Yes,STY0962,anaerobic dimethyl sulfoxide reductase chain A precursor,955875,G,A,A,G,#000000,Klemm et al. 2018; Dyson et al. 2021
 4.3.1.2,Yes,STY3836,putative lipoprotein,3694947,C,G,G,C,#c51b7d,Britto et al. 2018; Holt et al. 2010
+4.3.1.2.1,Yes,STY1913 (hyaA),hydrogenase-1 small subunit (pseudogene),1806478,A,G,G,A,#980b5c,Ingle et al. 2023
+4.3.1.2.1,Yes,STY0130 (leuC),3-isopropylmalate dehydratase,131973,C,T,T,C,#980b5c,Ingle et al. 2023
 4.3.1.2.EA2,Yes,STY4818,putative inner membrane protein,4680610,C,T,T,C,#c51b7d,Kariuki et al. 2021
 4.3.1.2.EA3,Yes,STY2750,hypothetical protein,2587488,G,A,A,G,#c51b7d,Kariuki et al. 2021
 4.3.1.3,Yes,STY0554,putative membrane protein,561056,C,A,A,C,#FB8072,Tanmoy et al. 2018; Rahman et al. 2020
