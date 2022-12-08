@@ -81,7 +81,7 @@
 4.3.1.1.P1,Yes,STY0962,anaerobic dimethyl sulfoxide reductase chain A precursor,955875,G,A,A,G,#000000,Klemm et al. 2018; Dyson et al. 2021
 4.3.1.2,Yes,STY3836,putative lipoprotein,3694947,C,G,G,C,#c51b7d,Britto et al. 2018; Holt et al. 2010
 4.3.1.2.1,Yes,STY1913 (hyaA),hydrogenase-1 small subunit (pseudogene),1806478,A,G,G,A,#980b5c,Ingle et al. 2023
-4.3.1.2.1,Yes,STY0130 (leuC),3-isopropylmalate dehydratase,131973,C,T,T,C,#980b5c,Ingle et al. 2023
+4.3.1.2.1.1,Yes,STY0130 (leuC),3-isopropylmalate dehydratase,131973,C,T,T,C,#980b5c,Ingle et al. 2023
 4.3.1.2.EA2,Yes,STY4818,putative inner membrane protein,4680610,C,T,T,C,#c51b7d,Kariuki et al. 2021
 4.3.1.2.EA3,Yes,STY2750,hypothetical protein,2587488,G,A,A,G,#c51b7d,Kariuki et al. 2021
 4.3.1.3,Yes,STY0554,putative membrane protein,561056,C,A,A,C,#FB8072,Tanmoy et al. 2018; Rahman et al. 2020
