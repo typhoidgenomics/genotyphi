@@ -20,6 +20,37 @@ The GenoTyphi scheme is also available via the online analysis platform [Pathoge
 
 ## Mykrobe Implementation
 
+### Quick start
+
+#### Install Mykrobe:
+
+```
+bioconda - conda install -c bioconda mykrobe
+from source - pip3 install . && mykrobe panels update_metadata && mykrobe panels update_species all
+```
+
+#### Run Mykrobe on fastq file/s for a given genome:
+
+```
+mykrobe predict --sample aSample \
+  --species typhi \
+  --format json \
+  --out aSample.json \
+  --seq aSample_1.fastq.gz aSample_2.fastq.gz
+```
+
+Output is one JSON file per genome
+
+#### Tabulate Mykrobe results for one or more genomes:
+
+(requires Python3 + pandas library)
+
+```
+python parse_typhi_mykrobe.py --jsons *.json --prefix mykrobe_out
+```
+
+Output is a single tab-delimited table, output format is [described below](#explanation-of-columns-in-the-output).
+
 ### Installing mykrobe
 
 First, install Mykrobe (v0.10.0+) as per the instructions on the [Mykrobe github](https://github.com/Mykrobe-tools/mykrobe).
