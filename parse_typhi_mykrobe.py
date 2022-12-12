@@ -301,7 +301,7 @@ def extract_lineage_info(lineage_data, genome_name):
                     'lowest support for genotype marker', 'poorly supported markers',
                     'node support', 'max support for additional markers',
                     'additional markers']
-    # if spp is unknown, then this is not sonnei, exit this function
+    # if spp is unknown, then this is not typhi, exit this function
     if spp_call == "Unknown":
         out_dict = {'genome': [genome_name], 'species': ['not typhi'], 'spp_percent': [0], 'genotype': ['NA'],
                     'confidence': ['NA'], 'lowest support for genotype marker': ['NA'], 'poorly supported markers': ['NA'],
@@ -324,13 +324,13 @@ def extract_lineage_info(lineage_data, genome_name):
     #set up dictionary for final table output
     lineage_out_dict = {'genome': [genome_name]}
 
-    # this try/except statement deals with instances where for some reason there is no lineage output
-    # in the json file
+    # this try/except statement deals with instances where the genome is typhi but no markers are detected
+    # in this instace return 'lineage0'
     try:
         genotype_calls = lineage_data['lineage']['lineage']
     except KeyError:
         out_dict = {'genome': [genome_name], 'species': ['typhi'], 'spp_percent': [spp_percentage],
-                    'genotype': ['uncalled'], 'confidence': ['NA'], 'lowest support for genotype marker': ['NA'],
+                    'genotype': ['lineage0'], 'confidence': ['NA'], 'lowest support for genotype marker': ['NA'],
                     'poorly supported markers': ['NA'], 'max support for additional markers': ['NA'],
                     'additional markers': ['NA'], 'node support': ['NA']}
         out_df = pd.DataFrame(out_dict, columns=column_order)
