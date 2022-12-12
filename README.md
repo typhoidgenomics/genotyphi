@@ -1,6 +1,6 @@
 # genotyphi
 
-The GenoTyphi genotyping scheme divides the *Salmonella* Typhi population into 4 major lineages, and >75 different clades and subclades. The scheme specification is detailed in the file 'Genotype_specification.csv' in this repository, which also includes the standard clade-level colour codes that we use for consistency across papers.
+The GenoTyphi genotyping scheme divides the *Salmonella* Typhi population into 4 major lineages, and >75 different clades and subclades. The scheme specification is detailed in the file `Genotype_specification.csv` in this repository, which also includes the standard clade-level colour codes that we use for consistency across papers.
 
 The scheme is described in this paper, **which serves as the primary citation for the scheme**: ["An extended genotyping framework for Salmonella enterica serovar Typhi, the cause of human typhoid", Wong et al, 2016, Nature Communications](http://www.nature.com/articles/ncomms12827/).
 
@@ -12,7 +12,7 @@ Two implementations of the code that can assign genotypes to Typhi genomes are a
 
 * [Original Python implementation](https://github.com/katholt/genotyphi/blob/main/README.md#original-implementation-pre-mapped-data), which takes as input **BAM or VCF files that the user has already generated** by mapping Illumina reads to the reference genome CT18. It also detects the QRDR and *acrB* mutations listed in 'AMR_mutation_alleles.csv' in this repository.
 
-The GenoTyphi scheme is also available via the online analysis platform [Pathogenwatch](https://pathogen.watch/), which facilitates automated analysis of Typhi genomic reads or assemblies as described in [this paper](https://www.nature.com/articles/s41467-021-23091-2).
+The GenoTyphi scheme is also available via the online analysis platform [Pathogenwatch](https://pathogen.watch/), which facilitates automated analysis of Typhi genome assemblies as described in [this paper](https://www.nature.com/articles/s41467-021-23091-2).
 
 **Whichever tool you use to access the GenoTyphi scheme, please cite the [GenoTyphi paper](https://doi.org/10.1093/infdis/jiab414).**
 
@@ -51,6 +51,12 @@ python parse_typhi_mykrobe.py --jsons *.json --prefix mykrobe_out
 
 Output is a single tab-delimited table, output format is [described below](#explanation-of-columns-in-the-output).
 
+### Detailed instructions
+* [Install Mykrobe and Typhi panels](#installing-mykrobe)
+* [Run Mykrobe](#running-mykrobe)
+* [Tabulate Mykrobe output](#parse-mykrobe-output)
+* [Output format](#explanation-of-columns-in-the-output)
+
 ### Installing mykrobe
 
 First, install Mykrobe (v0.10.0+) as per the instructions on the [Mykrobe github](https://github.com/Mykrobe-tools/mykrobe).
@@ -66,7 +72,7 @@ You can check what version of the scheme is currently loaded in your Mykrobe ins
 mykrobe panels describe
 ```
 
-### Running mykrobe
+### Running Mykrobe
 
 Inputs are fastq files.
 
@@ -80,7 +86,7 @@ To run on ONT data instead, add the `--ont` flag to your command.
 
 Further details on options can be found on the Mykrobe wiki: https://github.com/Mykrobe-tools/mykrobe/wiki
 
-### Parse mykrobe output
+### Parse Mykrobe output
 
 #### Code
 
