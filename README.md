@@ -24,9 +24,13 @@ The GenoTyphi scheme is also available via the online analysis platform [Pathoge
 
 #### Install Mykrobe:
 
+From bioconda:
 ```
-bioconda - conda install -c bioconda mykrobe
-from source - pip3 install . && mykrobe panels update_metadata && mykrobe panels update_species all
+conda install -c bioconda mykrobe
+```
+From source (after downloading mykrobe, from the mykrobe directory):
+```
+pip3 install . && mykrobe panels update_metadata && mykrobe panels update_species all
 ```
 
 #### Run Mykrobe on fastq file/s for a given genome:
