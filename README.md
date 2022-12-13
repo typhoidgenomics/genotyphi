@@ -65,7 +65,7 @@ Output is a single tab-delimited table, output format is [described below](#expl
 
 First, install Mykrobe (v0.10.0+) as per the instructions on the [Mykrobe github](https://github.com/Mykrobe-tools/mykrobe).
 
-Once Mykrobe is installed, you can run the following two commands to ensure you have the most up-to-date panels for genotyping, including the [Typhi panel](https://doi.org/10.26180/14881701.v1):
+Once Mykrobe is installed, you can run the following two commands to ensure you have the most up-to-date panels for genotyping, including the [Typhi panel](https://doi.org/10.6084/m9.figshare.21695528.v1):
 ```
 mykrobe panels update_metadata
 mykrobe panels update_species all
