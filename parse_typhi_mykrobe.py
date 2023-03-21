@@ -51,7 +51,7 @@ def extract_amr_info(genome_data, genome_name, spp_call):
     num_qrdr_calls = 0
     # intalise sulfamethoxazole variables
     sulfamethoxazole = 0
-    sulfamethoxazole_determinents = []
+    sulfamethoxazole_determinants = []
     # can only extract qrdr info if sample is sonnei, otherwise set 'unknown' for all calls
     if spp_call == "Salmonella_Typhi":
         try:
@@ -116,10 +116,10 @@ def extract_amr_info(genome_data, genome_name, spp_call):
                 # so sulfamethoxazole has to equal 2 for this to become R
                 if drug == "trimethoprim":
                     sulfamethoxazole += 1
-                    sulfamethoxazole_determinents += new_res_calls
+                    sulfamethoxazole_determinants += new_res_calls
                 if drug == "sulfonamides":
                     sulfamethoxazole += 1
-                    sulfamethoxazole_determinents += new_res_calls
+                    sulfamethoxazole_determinants += new_res_calls
             # otherwise this genome is susceptible so record it as such
             else:
                 amr_out_dict[drug] = ['S']
@@ -129,9 +129,9 @@ def extract_amr_info(genome_data, genome_name, spp_call):
     amr_out_dict['num QRDR'] = [num_qrdr_calls]
     # add a sulfamethoxazole column, only gets an R if there is both a dfr and a sul
     if sulfamethoxazole == 2:
-        amr_out_dict['sulfamethoxazole'] = ['R: ' + ';'.join(sulfamethoxazole_determinents)]
+        amr_out_dict['trimethoprim-sulfamethoxazole'] = ['R: ' + ';'.join(sulfamethoxazole_determinants)]
     else:
-        amr_out_dict['sulfamethoxazole'] = ['S']
+        amr_out_dict['trimethoprim-sulfamethoxazole'] = ['S']
     # make table, renaming final column to be the pST for the IncHI1 plasmid
     amr_out_df = pd.DataFrame(amr_out_dict)
     # rename column for plasmid ST
@@ -414,8 +414,8 @@ def main():
     column_order = ["genome", "species", "spp_percent", "genotype", "confidence",
                     "lowest support for genotype marker", "poorly supported markers",
                     "max support for additional markers", "additional markers", "node support", "ampicillin",
-                    "azithromycin", "ceftriaxone", "ciprofloxacin", "chloramphenicol", "sulfamethoxazole", "sulfonamides",
-                    "trimethoprim", "tetracycline", 'IncFIAHI1', 'IncHI1A', 'IncHI1BR27', 'IncHI1_ST6', 'IncY', 'IncX3',
+                    "azithromycin", "ceftriaxone", "ciprofloxacin", "chloramphenicol", "sulfonamides",
+                    "trimethoprim", "trimethoprim-sulfamethoxazole", "tetracycline", 'IncFIAHI1', 'IncHI1A', 'IncHI1BR27', 'IncHI1_ST6', 'IncY', 'IncX3',
                     'IncHI2A', 'IncI1', 'IncL_M', 'IncFIB_pHCM2', 'IncFIB_K', 'IncN', 'z66', 'num QRDR',
                     'parC_S80I', 'parC_S80R', 'parC_E84G', 'parC_E84K', 'gyrA_S83F', 'gyrA_S83Y', 'gyrA_D87G', 'gyrA_D87N',
                     'gyrA_D87V', 'gyrA_D87Y', 'gyrB_S464F', 'gyrB_S464Y', 'acrB_R717L', 'acrB_R717Q',
