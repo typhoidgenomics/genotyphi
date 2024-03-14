@@ -1,11 +1,11 @@
 ﻿TEM1D,ampicillin,resistance gene
+OXA7,ampicillin,resistance gene
 ereA,azithromycin,resistance gene
 ermB,azithromycin,resistance gene
 mphA,azithromycin,resistance gene
 AmpC1,ceftriaxone,resistance gene
 CTXM15,ceftriaxone,resistance gene
 OXA134,ceftriaxone,resistance gene
-OXA7,ceftriaxone,resistance gene
 SHV12,ceftriaxone,resistance gene
 catA1,chloramphenicol,resistance gene
 cmlA1,chloramphenicol,resistance gene
