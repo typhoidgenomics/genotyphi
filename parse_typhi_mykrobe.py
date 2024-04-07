@@ -26,7 +26,7 @@ def set_amr_NA(amr_out_dict, drug_linked_mutations):
 def extract_amr_info(genome_data, genome_name, spp_call):
     # make a dict of all drugs linked with all of their possible mutations
     drug_linked_mutations = {'azithromycin': ['acrB_R717L', 'acrB_R717Q', 'mphA', 'ermB', 'ereA'],
-                             'ampicillin': ['blaTEM-1D'], 'ceftriaxone': ['blaCTX-M-15', 'AmpC1', 'blaOXA-7', 'blaOXA-134', 'blaSHV-12'],
+                             'ampicillin': ['blaTEM-1D', 'blaOXA-7'], 'ceftriaxone': ['blaCTX-M-15', 'AmpC1', 'blaOXA-134', 'blaSHV-12'],
                              'ciprofloxacin': ['parC_S80I', 'parC_S80R', 'parC_E84G', 'parC_E84K', 'gyrA_S83F',
                                                'gyrA_S83Y', 'gyrA_D87G', 'gyrA_D87N', 'gyrA_D87V', 'gyrA_D87Y',
                                                'gyrB_S464F', 'gyrB_S464Y', 'qnrS1', 'qnrB1', 'qnrD1'],
