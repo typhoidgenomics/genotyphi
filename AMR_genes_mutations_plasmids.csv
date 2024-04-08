@@ -1,54 +1,59 @@
-﻿TEM1D,ampicillin,resistance gene
-OXA7,ampicillin,resistance gene
-ereA,azithromycin,resistance gene
-ermB,azithromycin,resistance gene
-mphA,azithromycin,resistance gene
-AmpC1,ceftriaxone,resistance gene
-CTXM15,ceftriaxone,resistance gene
-OXA134,ceftriaxone,resistance gene
-SHV12,ceftriaxone,resistance gene
-catA1,chloramphenicol,resistance gene
-cmlA1,chloramphenicol,resistance gene
-qnrB1,ciprofloxacin,resistance gene
-qnrD1,ciprofloxacin,resistance gene
-qnrS1,ciprofloxacin,resistance gene
-sul1,sulfonamides,resistance gene
-sul2,sulfonamides,resistance gene
-tetA,tetracycline,resistance gene
-tetB,tetracycline,resistance gene
-tetC,tetracycline,resistance gene
-tetD,tetracycline,resistance gene
-dfrA1,trimethoprim,resistance gene
-dfrA14,trimethoprim,resistance gene
-dfrA15,trimethoprim,resistance gene
-dfrA17,trimethoprim,resistance gene
-dfrA18,trimethoprim,resistance gene
-dfrA5,trimethoprim,resistance gene
-dfrA7,trimethoprim,resistance gene
-R717L,azithromycin,resistance mutation
-R717Q,azithromycin,resistance mutation
-D87G,ciprofloxacin,resistance mutation
-D87N,ciprofloxacin,resistance mutation
-D87V,ciprofloxacin,resistance mutation
-D87Y,ciprofloxacin,resistance mutation
-E84G,ciprofloxacin,resistance mutation
-E84K,ciprofloxacin,resistance mutation
-S464F,ciprofloxacin,resistance mutation
-S464Y,ciprofloxacin,resistance mutation
-S80I,ciprofloxacin,resistance mutation
-S80R,ciprofloxacin,resistance mutation
-S83F,ciprofloxacin,resistance mutation
-S83Y,ciprofloxacin,resistance mutation
-IncFIAHI1,IncFIAHI1,plasmid
-IncFIB_K,IncFIB_K,plasmid
-IncFIB_pHCM2,IncFIB_pHCM2,plasmid
-IncHI1A,IncHI1A,plasmid
-IncHI1BR27,IncHI1BR27,plasmid
-IncHI2A,IncHI2A,plasmid
-IncI1,IncI1,plasmid
-IncL_M,IncL_M,plasmid
-IncN,IncN,plasmid
-IncX3,IncX3,plasmid
-IncY,IncY,plasmid
-z66,z66,plasmid
-C19241A,pST,plasmid sequence type
+TEM1D,ampicillin,resistance gene,AL513383.1
+OXA7,ampicillin,resistance gene,X75562.1
+ereA,azithromycin,resistance gene,AY183453.1
+ermB,azithromycin,resistance gene,AF242872.1
+mphA,azithromycin,resistance gene,D16251.1
+CTXM15,ceftriaxone;ampicillin,resistance gene,AY044436.1
+SHV12,ceftriaxone;ampicillin,resistance gene,KF976405.1
+NDM5,carbapenem;ceftriaxone;ampicillin,resistance gene,JN104597.1
+KPC2,carbapenem;ceftriaxone;ampicillin,resistance gene,AY034847.1
+VIM1,carbapenem;ceftriaxone;ampicillin,resistance gene,AF317511.1
+IMP27,carbapenem;ceftriaxone;ampicillin,resistance gene,JF894248.1
+OXA48,carbapenem;ampicillin,resistance gene,AY236073.2
+catA1,chloramphenicol,resistance gene,V00622.1
+cmlA1,chloramphenicol,resistance gene,M64556.1
+qnrB1,ciprofloxacin,resistance gene,DQ351241.1
+qnrD1,ciprofloxacin,resistance gene,FJ228229.1
+qnrS1,ciprofloxacin,resistance gene,DQ485529.1
+sul1,sulfonamides,resistance gene,JF969163.1
+sul2,sulfonamides,resistance gene,AY055428.1
+tetA,tetracycline,resistance gene,AF534183.1
+tetB,tetracycline,resistance gene,AB089595.1
+tetC,tetracycline,resistance gene,AY043299.1
+tetD,tetracycline,resistance gene,AF467077.1
+dfrA1,trimethoprim,resistance gene,KJ541681.1
+dfrA14,trimethoprim,resistance gene,KF921535.1
+dfrA15,trimethoprim,resistance gene,KF534911.1
+dfrA17,trimethoprim,resistance gene,DQ838665.1
+dfrA18,trimethoprim,resistance gene,AJ310778.1
+dfrA5,trimethoprim,resistance gene,DQ278190.1
+dfrA7,trimethoprim,resistance gene,FJ854362.1
+acrB-R717L,azithromycin,resistance mutation,STY0519 in AL513382
+acrB-R717Q,azithromycin,resistance mutation,STY0519 in AL513382
+gyrA-D87G,ciprofloxacin,resistance mutation,STY2499 in AL513382
+gyrA-D87N,ciprofloxacin,resistance mutation,STY2499 in AL513382
+gyrA-D87V,ciprofloxacin,resistance mutation,STY2499 in AL513382
+gyrA-D87Y,ciprofloxacin,resistance mutation,STY2499 in AL513382
+parC-E84G,ciprofloxacin,resistance mutation,STY3351 in AL513382
+parC-E84K,ciprofloxacin,resistance mutation,STY3351 in AL513382
+gyrB-S464F,ciprofloxacin,resistance mutation,STY3943 in AL513382
+gyrB-S464Y,ciprofloxacin,resistance mutation,STY3943 in AL513382
+parC-S80I,ciprofloxacin,resistance mutation,STY3351 in AL513382
+parC-S80R,ciprofloxacin,resistance mutation,STY3351 in AL513382
+gyrA-S83F,ciprofloxacin,resistance mutation,STY2499 in AL513382
+gyrA-S83Y,ciprofloxacin,resistance mutation,STY2499 in AL513382
+IncFIAHI1,IncFIAHI1,plasmid,AF250878
+IncFIB_K,IncFIB_K,plasmid,JN233704
+IncFIB_pHCM2,IncFIB_pHCM2,plasmid,AL513384
+IncHI1A,IncHI1A,plasmid,AF250878
+IncHI1BR27,IncHI1BR27,plasmid,AF250878
+IncHI2A,IncHI2A,plasmid,BX664015
+IncI1,IncI1,plasmid,AP005147
+IncL_M,IncL_M,plasmid,AF550415
+IncN,IncN,plasmid,AY046276
+IncX3,IncX3,plasmid,JN247852
+IncY,IncY,plasmid,K02380
+z66,z66,plasmid,fljB gene in AB108532.1
+C19241A,pST,plasmid sequence type,position 19241 in AM412236 (C->A)
+IncX1,IncX1,plasmid,EU370913
+p0111,p0111,plasmid,AP010962
