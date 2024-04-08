@@ -26,7 +26,7 @@ def set_amr_NA(amr_out_dict, drug_linked_mutations):
 def extract_amr_info(genome_data, genome_name, spp_call):
     # make a dict of all drugs linked with all of their possible mutations
     drug_linked_mutations = {'azithromycin': ['acrB_R717L', 'acrB_R717Q', 'mphA', 'ermB', 'ereA'],
-                             'ampicillin': ['blaTEM-1D', 'blaOXA-7'], 'ceftriaxone': ['blaCTX-M-15', 'AmpC1', 'blaOXA-134', 'blaSHV-12'],
+                             'ampicillin': ['blaTEM-1D', 'blaOXA-7'], 'ceftriaxone': ['blaCTX-M-15', 'blaSHV-12'],
                              'carbapenem': ['blaKPC-2', 'blaNDM-5', 'blaVIM-1', 'blaIMP-27', 'blaOXA-48'],
                              'ciprofloxacin': ['parC_S80I', 'parC_S80R', 'parC_E84G', 'parC_E84K', 'gyrA_S83F',
                                                'gyrA_S83Y', 'gyrA_D87G', 'gyrA_D87N', 'gyrA_D87V', 'gyrA_D87Y',
@@ -39,7 +39,7 @@ def extract_amr_info(genome_data, genome_name, spp_call):
                              'IncL_M': ['IncL_M'], 'IncFIB_pHCM2': ['IncFIB_pHCM2'], 'IncFIB_K': ['IncFIB_K'],
                              'IncN': ['IncN'], 'z66': ['z66'], 'pST': ['NA_C19241A'], 'IncX1': ['IncX1'], 'p0111': ['p0111']}
     # make a dict to convert the beta lactamase enzyme names from mykrobe into their more correct genetic names
-    bla_enzymes = {'TEM1D': 'blaTEM-1D', 'CTXM15': 'blaCTX-M-15', 'OXA7': 'blaOXA-7', 'OXA134': 'blaOXA-134', 'SHV12': 'blaSHV-12', 
+    bla_enzymes = {'TEM1D': 'blaTEM-1D', 'CTXM15': 'blaCTX-M-15', 'OXA7': 'blaOXA-7', 'SHV12': 'blaSHV-12', 
             'KPC2': 'blaKPC-2', 'NDM5': 'blaNDM-5', 'VIM1': 'blaVIM-1', 'IMP27': 'blaIMP-27', 'OXA48': 'blaOXA-48'}
     # list of all possible plasmid reps so we can make these 0/1 rather than R/S
     plasmid_reps = ['IncFIAHI1', 'IncHI1A', 'IncHI1BR27', 'IncY', 'z66', 'pST', 'IncX3', 'IncHI2A', 'IncI1', 'IncL_M','IncFIB_pHCM2','IncFIB_K','IncN', 'IncX1']
@@ -417,11 +417,11 @@ def main():
                     "lowest support for genotype marker", "poorly supported markers",
                     "max support for additional markers", "additional markers", "node support", "ampicillin",
                     "azithromycin", "carbapenem", "ceftriaxone", "ciprofloxacin", "chloramphenicol", "trimethoprim-sulfamethoxazole", "sulfonamides",
-                    "trimethoprim", "tetracycline", 'IncFIAHI1', 'IncHI1A', 'IncHI1BR27', 'IncHI1_ST6', 'IncY', 'IncX3',
-                    'IncHI2A', 'IncI1', 'IncL_M', 'IncFIB_pHCM2', 'IncFIB_K', 'IncN', 'IncX1', 'z66', 'num QRDR',
+                    "trimethoprim", "tetracycline", 'IncHI1A', 'IncHI1BR27','IncFIAHI1', 'IncHI1_ST6','IncFIB_K','IncFIB_pHCM2', 'IncHI2A', 
+                    'IncI1', 'IncL_M', 'IncN', 'IncX1', 'IncX3', 'IncY', 'z66', 'num QRDR',
                     'parC_S80I', 'parC_S80R', 'parC_E84G', 'parC_E84K', 'gyrA_S83F', 'gyrA_S83Y', 'gyrA_D87G', 'gyrA_D87N',
                     'gyrA_D87V', 'gyrA_D87Y', 'gyrB_S464F', 'gyrB_S464Y', 'acrB_R717L', 'acrB_R717Q',
-                    'mphA', 'ermB', 'ereA', 'blaTEM-1D', 'blaCTX-M-15', 'AmpC1', 'blaOXA-7', 'blaOXA-134', 'blaSHV-12','blaKPC-2', 'blaNDM-5', 'blaVIM-1', 'blaIMP-27', 'blaOXA-48', 
+                    'mphA', 'ermB', 'ereA', 'blaTEM-1D', 'blaCTX-M-15','blaOXA-7','blaSHV-12','blaKPC-2', 'blaNDM-5', 'blaVIM-1', 'blaIMP-27', 'blaOXA-48', 
                     'qnrS1', 'qnrB1', 'qnrD1', 'catA1', 'cmlA1',
                     'sul1', 'sul2', 'dfrA1', 'dfrA5', 'dfrA7', 'dfrA14', 'dfrA15', 'dfrA17', 'dfrA18', 'tetA',
                     'tetB', 'tetC', 'tetD']
