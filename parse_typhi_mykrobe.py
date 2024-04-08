@@ -27,6 +27,7 @@ def extract_amr_info(genome_data, genome_name, spp_call):
     # make a dict of all drugs linked with all of their possible mutations
     drug_linked_mutations = {'azithromycin': ['acrB_R717L', 'acrB_R717Q', 'mphA', 'ermB', 'ereA'],
                              'ampicillin': ['blaTEM-1D', 'blaOXA-7'], 'ceftriaxone': ['blaCTX-M-15', 'AmpC1', 'blaOXA-134', 'blaSHV-12'],
+                             'carbapenem': ['blaKPC-2', 'blaNDM-5', 'blaVIM-1', 'blaIMP-27', 'blaOXA-48'],
                              'ciprofloxacin': ['parC_S80I', 'parC_S80R', 'parC_E84G', 'parC_E84K', 'gyrA_S83F',
                                                'gyrA_S83Y', 'gyrA_D87G', 'gyrA_D87N', 'gyrA_D87V', 'gyrA_D87Y',
                                                'gyrB_S464F', 'gyrB_S464Y', 'qnrS1', 'qnrB1', 'qnrD1'],
@@ -36,11 +37,12 @@ def extract_amr_info(genome_data, genome_name, spp_call):
                              'IncFIAHI1': ['IncFIAHI1'], 'IncHI1A': ['IncHI1A'], 'IncHI1BR27': ['IncHI1BR27'],
                              'IncY': ['IncY'], 'IncX3':['IncX3'], 'IncHI2A': ['IncHI2A'], 'IncI1':['IncI1'],
                              'IncL_M': ['IncL_M'], 'IncFIB_pHCM2': ['IncFIB_pHCM2'], 'IncFIB_K': ['IncFIB_K'],
-                             'IncN': ['IncN'], 'z66': ['z66'], 'pST': ['NA_C19241A']}
+                             'IncN': ['IncN'], 'z66': ['z66'], 'pST': ['NA_C19241A'], 'IncX1': ['IncX1'], 'p0111': ['p0111']}
     # make a dict to convert the beta lactamase enzyme names from mykrobe into their more correct genetic names
-    bla_enzymes = {'TEM1D': 'blaTEM-1D', 'CTXM15': 'blaCTX-M-15', 'OXA7': 'blaOXA-7', 'OXA134': 'blaOXA-134', 'SHV12': 'blaSHV-12'}
+    bla_enzymes = {'TEM1D': 'blaTEM-1D', 'CTXM15': 'blaCTX-M-15', 'OXA7': 'blaOXA-7', 'OXA134': 'blaOXA-134', 'SHV12': 'blaSHV-12', 
+            'KPC2': 'blaKPC-2', 'NDM5': 'blaNDM-5', 'VIM1': 'blaVIM-1', 'IMP27': 'blaIMP-27', 'OXA48': 'blaOXA-48'}
     # list of all possible plasmid reps so we can make these 0/1 rather than R/S
-    plasmid_reps = ['IncFIAHI1', 'IncHI1A', 'IncHI1BR27', 'IncY', 'z66', 'pST', 'IncX3', 'IncHI2A', 'IncI1', 'IncL_M','IncFIB_pHCM2','IncFIB_K','IncN']
+    plasmid_reps = ['IncFIAHI1', 'IncHI1A', 'IncHI1BR27', 'IncY', 'z66', 'pST', 'IncX3', 'IncHI2A', 'IncI1', 'IncL_M','IncFIB_pHCM2','IncFIB_K','IncN', 'IncX1']
 
     # set up empty dict for final output
     amr_out_dict = {}
@@ -51,7 +53,7 @@ def extract_amr_info(genome_data, genome_name, spp_call):
     num_qrdr_calls = 0
     # intalise sulfamethoxazole variables
     sulfamethoxazole = 0
-    sulfamethoxazole_determinants = []
+    sulfamethoxazole_determinents = []
     # can only extract qrdr info if sample is sonnei, otherwise set 'unknown' for all calls
     if spp_call == "Salmonella_Typhi":
         try:
@@ -116,10 +118,10 @@ def extract_amr_info(genome_data, genome_name, spp_call):
                 # so sulfamethoxazole has to equal 2 for this to become R
                 if drug == "trimethoprim":
                     sulfamethoxazole += 1
-                    sulfamethoxazole_determinants += new_res_calls
+                    sulfamethoxazole_determinents += new_res_calls
                 if drug == "sulfonamides":
                     sulfamethoxazole += 1
-                    sulfamethoxazole_determinants += new_res_calls
+                    sulfamethoxazole_determinents += new_res_calls
             # otherwise this genome is susceptible so record it as such
             else:
                 amr_out_dict[drug] = ['S']
@@ -129,7 +131,7 @@ def extract_amr_info(genome_data, genome_name, spp_call):
     amr_out_dict['num QRDR'] = [num_qrdr_calls]
     # add a sulfamethoxazole column, only gets an R if there is both a dfr and a sul
     if sulfamethoxazole == 2:
-        amr_out_dict['trimethoprim-sulfamethoxazole'] = ['R: ' + ';'.join(sulfamethoxazole_determinants)]
+        amr_out_dict['trimethoprim-sulfamethoxazole'] = ['R: ' + ';'.join(sulfamethoxazole_determinents)]
     else:
         amr_out_dict['trimethoprim-sulfamethoxazole'] = ['S']
     # make table, renaming final column to be the pST for the IncHI1 plasmid
@@ -301,7 +303,7 @@ def extract_lineage_info(lineage_data, genome_name):
                     'lowest support for genotype marker', 'poorly supported markers',
                     'node support', 'max support for additional markers',
                     'additional markers']
-    # if spp is unknown, then this is not typhi, exit this function
+    # if spp is unknown, then this is not sonnei, exit this function
     if spp_call == "Unknown":
         out_dict = {'genome': [genome_name], 'species': ['not typhi'], 'spp_percent': [0], 'genotype': ['NA'],
                     'confidence': ['NA'], 'lowest support for genotype marker': ['NA'], 'poorly supported markers': ['NA'],
@@ -324,13 +326,13 @@ def extract_lineage_info(lineage_data, genome_name):
     #set up dictionary for final table output
     lineage_out_dict = {'genome': [genome_name]}
 
-    # this try/except statement deals with instances where the genome is typhi but no markers are detected
-    # in this instace return 'lineage0'
+    # this try/except statement deals with instances where for some reason there is no lineage output
+    # in the json file
     try:
         genotype_calls = lineage_data['lineage']['lineage']
     except KeyError:
         out_dict = {'genome': [genome_name], 'species': ['typhi'], 'spp_percent': [spp_percentage],
-                    'genotype': ['lineage0'], 'confidence': ['NA'], 'lowest support for genotype marker': ['NA'],
+                    'genotype': ['uncalled'], 'confidence': ['NA'], 'lowest support for genotype marker': ['NA'],
                     'poorly supported markers': ['NA'], 'max support for additional markers': ['NA'],
                     'additional markers': ['NA'], 'node support': ['NA']}
         out_df = pd.DataFrame(out_dict, columns=column_order)
@@ -414,12 +416,13 @@ def main():
     column_order = ["genome", "species", "spp_percent", "genotype", "confidence",
                     "lowest support for genotype marker", "poorly supported markers",
                     "max support for additional markers", "additional markers", "node support", "ampicillin",
-                    "azithromycin", "ceftriaxone", "ciprofloxacin", "chloramphenicol", "sulfonamides",
-                    "trimethoprim", "trimethoprim-sulfamethoxazole", "tetracycline", 'IncFIAHI1', 'IncHI1A', 'IncHI1BR27', 'IncHI1_ST6', 'IncY', 'IncX3',
-                    'IncHI2A', 'IncI1', 'IncL_M', 'IncFIB_pHCM2', 'IncFIB_K', 'IncN', 'z66', 'num QRDR',
+                    "azithromycin", "carbapenem", "ceftriaxone", "ciprofloxacin", "chloramphenicol", "trimethoprim-sulfamethoxazole", "sulfonamides",
+                    "trimethoprim", "tetracycline", 'IncFIAHI1', 'IncHI1A', 'IncHI1BR27', 'IncHI1_ST6', 'IncY', 'IncX3',
+                    'IncHI2A', 'IncI1', 'IncL_M', 'IncFIB_pHCM2', 'IncFIB_K', 'IncN', 'IncX1', 'z66', 'num QRDR',
                     'parC_S80I', 'parC_S80R', 'parC_E84G', 'parC_E84K', 'gyrA_S83F', 'gyrA_S83Y', 'gyrA_D87G', 'gyrA_D87N',
                     'gyrA_D87V', 'gyrA_D87Y', 'gyrB_S464F', 'gyrB_S464Y', 'acrB_R717L', 'acrB_R717Q',
-                    'mphA', 'ermB', 'ereA', 'blaTEM-1D', 'blaCTX-M-15', 'AmpC1', 'blaOXA-7', 'blaOXA-134', 'blaSHV-12', 'qnrS1', 'qnrB1', 'qnrD1', 'catA1', 'cmlA1',
+                    'mphA', 'ermB', 'ereA', 'blaTEM-1D', 'blaCTX-M-15', 'AmpC1', 'blaOXA-7', 'blaOXA-134', 'blaSHV-12','blaKPC-2', 'blaNDM-5', 'blaVIM-1', 'blaIMP-27', 'blaOXA-48', 
+                    'qnrS1', 'qnrB1', 'qnrD1', 'catA1', 'cmlA1',
                     'sul1', 'sul2', 'dfrA1', 'dfrA5', 'dfrA7', 'dfrA14', 'dfrA15', 'dfrA17', 'dfrA18', 'tetA',
                     'tetB', 'tetC', 'tetD']
     final_results = final_results.reindex(columns=column_order)
