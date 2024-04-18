@@ -123,7 +123,7 @@ python parse_typhi_mykrobe.py --jsons *.json --prefix mykrobe_out
 
 ### Explanation of columns in the output:
 * **genome**: sample ID
-* **species**: species call from Mykrobe (Typhi or unknown; determined by matching to Typhi STs from the 7-locus MLST scheme)
+* **serovar**: species call from Mykrobe (Typhi or unknown; determined by matching to Typhi STs from the 7-locus MLST scheme)
 * **spp_percent:** percentage coverage to the Typhi ST probes
 * **final genotype**: final genotype call from Mykrobe, using the latest version of GenoTyphi
 * **confidence**: measure of confidence in the final genotype call, summarising read support across all levels in the hierarchy (lineage, clade, subclade, etc)
