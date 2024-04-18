@@ -299,13 +299,13 @@ def extract_lineage_info(lineage_data, genome_name):
     # first, extract phylo spp information - if the spp is not Typhi then don't proceed
     spp_data = lineage_data['species']
     spp_call = list(spp_data.keys())[0]
-    column_order = ['genome', 'species', 'spp_percent', 'genotype', 'confidence',
+    column_order = ['genome', 'serovar', 'spp_percent', 'genotype', 'confidence',
                     'lowest support for genotype marker', 'poorly supported markers',
                     'node support', 'max support for additional markers',
                     'additional markers']
     # if spp is unknown, then this is not sonnei, exit this function
     if spp_call == "Unknown":
-        out_dict = {'genome': [genome_name], 'species': ['not typhi'], 'spp_percent': [0], 'genotype': ['NA'],
+        out_dict = {'genome': [genome_name], 'serovar': ['not typhi'], 'spp_percent': [0], 'genotype': ['NA'],
                     'confidence': ['NA'], 'lowest support for genotype marker': ['NA'], 'poorly supported markers': ['NA'],
                     'node support': ['NA'], 'max support for additional markers': ['NA'], 'additional markers': ['NA']}
         out_df = pd.DataFrame(out_dict, columns=column_order)
@@ -315,7 +315,7 @@ def extract_lineage_info(lineage_data, genome_name):
         spp_percentage = spp_data["Salmonella_Typhi"]["percent_coverage"]
         # if the percentage is <89, then exit this function as it's likely not typhi
         if spp_percentage < 85:
-            out_dict = {'genome':[genome_name], 'species':['not typhi'], 'spp_percent': [spp_percentage],
+            out_dict = {'genome':[genome_name], 'serovar':['not typhi'], 'spp_percent': [spp_percentage],
                         'genotype': ['NA'], 'confidence': ['NA'], 'lowest support for genotype marker': ['NA'],
                         'poorly supported markers': ['NA'], 'node support': ['NA'], 'max support for additional markers': ['NA'],
                         'additional markers':['NA']}
@@ -331,7 +331,7 @@ def extract_lineage_info(lineage_data, genome_name):
     try:
         genotype_calls = lineage_data['lineage']['lineage']
     except KeyError:
-        out_dict = {'genome': [genome_name], 'species': ['typhi'], 'spp_percent': [spp_percentage],
+        out_dict = {'genome': [genome_name], 'serovar': ['typhi'], 'spp_percent': [spp_percentage],
                     'genotype': ['uncalled'], 'confidence': ['NA'], 'lowest support for genotype marker': ['NA'],
                     'poorly supported markers': ['NA'], 'max support for additional markers': ['NA'],
                     'additional markers': ['NA'], 'node support': ['NA']}
@@ -377,7 +377,7 @@ def extract_lineage_info(lineage_data, genome_name):
         lineage_out_dict['additional markers'] = ['; '.join(non_matching_markers)]
         lineage_out_dict['node support'] = ['; '.join(final_markers)]
     # add species info
-    lineage_out_dict['species'] = ['typhi']
+    lineage_out_dict['serovar'] = ['typhi']
     lineage_out_dict['spp_percent'] = [spp_percentage]
     lineage_out_df = pd.DataFrame(lineage_out_dict, columns=column_order)
 
@@ -413,7 +413,7 @@ def main():
 
     # concatenate, re-order columns, and write out
     final_results = pd.concat(results_tables, sort=True)
-    column_order = ["genome", "species", "spp_percent", "genotype", "confidence",
+    column_order = ["genome", "serovar", "spp_percent", "genotype", "confidence",
                     "lowest support for genotype marker", "poorly supported markers",
                     "max support for additional markers", "additional markers", "node support", "ampicillin",
                     "azithromycin", "carbapenem", "ceftriaxone", "ciprofloxacin", "chloramphenicol", "trimethoprim-sulfamethoxazole", "sulfonamides",
