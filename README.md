@@ -4,9 +4,9 @@ This repository houses the GenoTyphi genotyping scheme for Salmonella Typhi.
 
 It also describes how to call genotypes, AMR and plasmid markers from Typhi whole-genome sequence reads using Mykrobe ('Typhi Mykrobe') and provides links to alternative tools for calling genotypes from reads or assemblies.
 
-* [GenoTyphi scheme](https://github.com/typhoidgenomics/genotyphi#GenoTyphi_Typing_Scheme)
-* [Typing from reads using Mykrobe ('Typhi Mykrobe')](https://github.com/typhoidgenomics/genotyphi#Typhi_Mykrobe)
-* [Other tools for callling genotypes from reads or assemblies](https://github.com/typhoidgenomics/genotyphi#Other_typing_tools)
+* [GenoTyphi scheme](#genotyphi-scheme)
+* [Typing from reads using Mykrobe ('Typhi Mykrobe')](#typhi-mykrobe)
+* [Other tools for callling genotypes from reads or assemblies](#other-typing-tools)
 
 
 ## GenoTyphi Scheme
@@ -27,24 +27,33 @@ The scheme is now managed by a working group of the [Global Typhoid Genomics Con
 
 ### Citation
 
-**Whichever tool you use to access the GenoTyphi scheme, please cite the [2021 GenoTyphi paper](https://doi.org/10.1093/infdis/jiab414).**
+Whichever tool you use to access the GenoTyphi scheme, please cite the [2021 GenoTyphi paper](https://doi.org/10.1093/infdis/jiab414).
 
-**If you use the scripts in this repository, please also cite the repository:** [![DOI](https://zenodo.org/badge/45819844.svg)](https://zenodo.org/badge/latestdoi/45819844)
+If you use the scripts in this repository, please also cite the repository: [![DOI](https://zenodo.org/badge/45819844.svg)](https://zenodo.org/badge/latestdoi/45819844)
 
 
 ## Typhi Mykrobe
 
-To call genotypes from reads, we recommend using 'Typhi Mykrobe'. [Mykrobe](https://github.com/Mykrobe-tools/mykrobe) provides a platform for kmer-based genotyping direct from fastq files. It was originally developed for genotyping TB and _Staph. aureus_ genomes, but we have developed a panel of genotyping probes for Typhi which provides simultaneous typing of:
+* [Overview](#overview)
+* [Quick start](#quick-start)
+* [Detailed instructions](#detailed-instructions)
+* [Output format](#explanation-of-columns-in-the-output)
 
+### Overview
+To call genotypes from reads, we recommend using 'Typhi Mykrobe'.
+
+The [Mykrobe](https://github.com/Mykrobe-tools/mykrobe) software provides a platform for kmer-based genotyping direct from fastq files. It was originally developed for genotyping TB and _Staph. aureus_ genomes, but we have developed a Mykrobe panel of genotyping probes for Typhi which provides simultaneous typing of:
 * GenoTyphi genotype calls
 * acquired antimicrobial resistance (AMR) genes
 * mutations in the quinolone-resistance determining region (QRDR) of genes *gyrA*, *gyrB* and *parC*
 * the *acrB*-R717Q/L mutations associated with azithromycin resistance
 * plasmid replicons and major subtypes of the IncHI1 plasmid typically associated with multidrug resistance 
 
-Drugs for which resistance is typed are: `ampicillin`, `azithromycin`, `ceftriaxone`, `ciprofloxacin`, `chloramphenicol`, `sulfonamides`, `trimethoprim`, `trimethoprim-sulfamethoxazole`, `tetracycline` indicate resistant (R) or susceptible (S) predictions for each genome.
+Drugs for which resistance is typed are: `ampicillin`, `azithromycin`, `ceftriaxone`, `ciprofloxacin`, `chloramphenicol`, `sulfonamides`, `trimethoprim`, `trimethoprim-sulfamethoxazole`, `tetracycline`. The output is presented as an antibiogram, indicating resistant (R) or susceptible (S) predictions for each drug in each genome.
 
 A full list of AMR/plasmid typing targets is in the file `typhimykrobe/AMR_genes_mutations_plasmids.csv`
+
+Below you will find instructions for installing and running Mykrobe with the Typhi panel, as well as a Python script for tabulating the results from multiple readsets (input = fastq, single or paired per genome; output = JSON, 1 per genome) into a simple tab-delimited table (input = JSON files, 1 per genome; output = single TSV).
 
 ### Quick start
 
@@ -71,9 +80,13 @@ mykrobe predict --sample aSample \
 
 Output is one JSON file per genome
 
+If your input fastq are Oxford Nanopore Technologies (ONT) reads, add the `--ont` flag to the command.
+
 #### Tabulate Mykrobe results for one or more genomes:
 
 (requires Python3 + pandas library)
+
+(python script `parse_typhi_mykrobe.py` is in this repository in the `/typhimykrobe` directory in this repository)
 
 ```
 python parse_typhi_mykrobe.py --jsons *.json --prefix mykrobe_out
@@ -120,13 +133,13 @@ Further details on options can be found on the Mykrobe wiki: https://github.com/
 
 #### Code
 
-`parse_typhi_mykrobe.py`
+`typhimykrobe/parse_typhi_mykrobe.py`
 
-We have provided a custom python3 script, parse_typhi_mykrobe.py, that will take a group of JSON files output by Mykrobe and summarise these into a single, tab-delimited table.
+We have provided a custom python3 script, `parse_typhi_mykrobe.py`, that will take a group of JSON files output by Mykrobe and summarise these into a single, tab-delimited table.
 
-The parser script will only report details of calls for genomes that are identified by Mykrobe as Typhi. Currently, a sample must have >=85% identity to Typhi MLST locus sequences to be called by the parser. This threshold may not be low enough to correctly parse json files created by analysing ONT data (however all the Mykrobe calls will still be present in the json file).
+The parser script will only report details of calls for genomes that are identified by Mykrobe as Typhi. Currently, a sample must have >=85% identity to Typhi MLST locus sequences to be called by the parser. This threshold may not be low enough to correctly parse JSON files created by analysing ONT data (however all the Mykrobe calls will still be present in the JSON file).
 
-Note that due to the nested hierarchical nature of the GenoTyphi scheme, we needed to create fake levels within the scheme to facilitate correct calling by Mykrobe. These fake levels are not reported in the output generated by the parser, but they are present in the raw json files output by Mykrobe. These can be identified in the json output as they are prepended by the word "lineage", and will always have a call of 0 from Mykrobe.
+Note that due to the nested hierarchical nature of the GenoTyphi scheme, we needed to create fake levels within the scheme to facilitate correct calling by Mykrobe. These fake levels are not reported in the output generated by the parser, but they are present in the raw JSON files output by Mykrobe. These can be identified in the JSON output as they are prepended by the word "lineage", and will always have a call of 0 from Mykrobe.
 
 #### Dependencies
 
@@ -135,12 +148,12 @@ Note that due to the nested hierarchical nature of the GenoTyphi scheme, we need
 
 #### Input
 
-* json files output by Mykrobe
+* JSON files output by Mykrobe
 * prefix for output file
 
 #### Output
 
-* tsv file, one row per json file
+* TSV file, one row per input JSON file
 
 #### Example command
 ```
@@ -170,7 +183,9 @@ Sequences and details of probes are available [here](https://doi.org/10.26180/14
 
 
 ## Other typing tools
-* [Original Python implementation](https://github.com/katholt/genotyphi/blob/main/README.md#original-implementation-pre-mapped-data), which takes as input **BAM or VCF files that the user has already generated** by mapping Illumina reads to the reference genome CT18. It also detects the QRDR and *acrB* mutations listed in 'AMR_genes_mutations_plasmids.csv' in this repository.
+* [Original Python implementation](mappingbased/README.md#original-implementation-pre-mapped-data). This takes as input **BAM or VCF files that the user has already generated** by aligning Illumina reads or assemblies to the reference genome CT18. It also detects the QRDR and *acrB* mutations listed in `typhimykrobe/AMR_genes_mutations_plasmids.csv` in this repository, but it does not call acquired genes or plasmid markers.
 
-The GenoTyphi scheme is also available via the online analysis platform [Pathogenwatch](https://pathogen.watch/), which facilitates automated analysis of Typhi genome assemblies as described in [this paper](https://www.nature.com/articles/s41467-021-23091-2).
+* The GenoTyphi scheme is also available via the online analysis platform [Pathogenwatch](https://pathogen.watch/), which facilitates automated analysis of Typhi genome assemblies as described in [this paper](https://www.nature.com/articles/s41467-021-23091-2).
+
+* The [BioHansel](https://github.com/phac-nml/biohansel) tool implements calling of GenoTyphi lineages along with those for other pathogens, as described in [this paper](https://doi.org/10.1099/mgen.0.000651). 
 
