@@ -192,7 +192,7 @@ Other tools that can be used to assign GenoTyphi lineages to Typhi genomes
 
 * [Pathogenwatch](https://pathogen.watch/) is an online platfomr, users can upload Typhi genome assemblies and get GenoTyphi lineages, AMR and plasmid determinants, as well as cluster-based phylogenetic trees, as described in [this paper](https://www.nature.com/articles/s41467-021-23091-2). It can also be used to identify public Typhi genomes of a given genotype (and/or from a specific country of interest).
 
-* [Original Python implementation](mappingbased/README.md#original-implementation-pre-mapped-data). This takes as input **BAM or VCF files that the user has already generated** by aligning Illumina reads or assemblies to the reference genome CT18. It also detects the QRDR and *acrB* mutations listed in `typhimykrobe/AMR_genes_mutations_plasmids.csv` in this repository, but it does not call acquired genes or plasmid markers.
+* [Original Python implementation](mappingbased/README.md). This takes as input **BAM or VCF files that the user has already generated** by aligning Illumina reads or assemblies to the reference genome CT18. It also detects the QRDR and *acrB* mutations listed in `typhimykrobe/AMR_genes_mutations_plasmids.csv` in this repository, but it does not call acquired genes or plasmid markers.
 
 * The [BioHansel](https://github.com/phac-nml/biohansel) tool implements calling of GenoTyphi lineages along with those for other pathogens, as described in [this paper](https://doi.org/10.1099/mgen.0.000651). 
 
