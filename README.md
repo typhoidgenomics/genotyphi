@@ -13,6 +13,8 @@ It also describes how to call genotypes, AMR and plasmid markers from Typhi whol
 
 The GenoTyphi genotyping scheme divides the *Salmonella* Typhi population into genotypes, which each represent a monophyletic cluster are defined by a unique single nucleotide variant (SNV) marker. There 4 major lineages, which are further divided into >75 different clades and subclades. The relationships between genotypes is conveyed in the name, so e.g. genotypes 2.2 and 2.3 are sister clades in the phylogeny, and 2.2 has daughter subclades 2.2.1, 2.2.2 and so forth, as illustrated in the figure below.
 
+<img src="figs/GenoTyphiTree.png" width="400">
+
 ### Scheme specification
 
 The latest scheme specification, mapping marker SNVs to genotypes, is detailed in the file `GenoTyphi_specification.csv` in this repository. This file also includes the standard clade-level colour codes that we use for consistency across papers.
@@ -54,6 +56,8 @@ Drugs for which resistance is typed are: `ampicillin`, `azithromycin`, `ceftriax
 A full list of AMR/plasmid typing targets is in the file `typhimykrobe/AMR_genes_mutations_plasmids.csv`
 
 Below you will find instructions for installing and running Mykrobe with the Typhi panel, as well as a Python script for tabulating the results from multiple readsets (input = fastq, single or paired per genome; output = JSON, 1 per genome) into a simple tab-delimited table (input = JSON files, 1 per genome; output = single TSV).
+
+<img src="figs/TyphiMykrobe.png" width="700">
 
 ### Quick start
 
