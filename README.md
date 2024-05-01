@@ -9,21 +9,29 @@ This repository houses the GenoTyphi genotyping scheme for Salmonella Typhi. It 
 
 ## GenoTyphi Scheme
 
-The GenoTyphi genotyping scheme divides the *Salmonella* Typhi population into 4 major lineages, and >75 different clades and subclades. The scheme specification is detailed in the file `GenoTyphi_specification.csv` in this repository, which also includes the standard clade-level colour codes that we use for consistency across papers.
+The GenoTyphi genotyping scheme divides the *Salmonella* Typhi population into 4 major lineages, and >75 different clades and subclades, as illustrated in the figure below: 
 
-The scheme is described in this paper, **which serves as the primary citation for the scheme**: ["An extended genotyping framework for Salmonella enterica serovar Typhi, the cause of human typhoid", Wong et al, 2016, Nature Communications](http://www.nature.com/articles/ncomms12827/).
 
-Subsequent updates to the genotyping scheme, including new genotypes and mutations conferring resistance to fluoroquinolones and azithromycin, are summarised in ["Five years of GenoTyphi: updates to the global Salmonella Typhi genotyping framework", Dyson & Holt, 2021, Journal of Infectious Diseases](https://doi.org/10.1093/infdis/jiab414).
 
-Two implementations of the code that can assign genotypes to Typhi genomes are available in this repository:
+The scheme specification is detailed in the file `GenoTyphi_specification.csv` in this repository, which also includes the standard clade-level colour codes that we use for consistency across papers.
 
-* [Mykrobe implementation](https://github.com/katholt/genotyphi/blob/main/README.md#mykrobe-implementation), which takes as input **sequence reads (fastq files)** from Illumina or long-read platforms. It also detects known mutations in the quinolone-resistance determining region (QRDR) of genes *gyrA*, *gyrB* and *parC*; and the *acrB*-R717Q/L mutations associated with azithromycin resistance; acquired antimicrobial resistance genes; plasmid replicons and major subtypes of the IncHI1 plasmid typically associated with multidrug resistance (list of targets is in 'AMR_genes_mutations_plasmids.csv'). Drugs for which resistance is typed are: `ampicillin`, `azithromycin`, `ceftriaxone`, `ciprofloxacin`, `chloramphenicol`, `sulfonamides`, `trimethoprim`, `trimethoprim-sulfamethoxazole`, `tetracycline` indicate resistant (R) or susceptible (S) predictions for each genome.
+The initial development of the scheme is described in this paper, **which serves as the primary citation for the scheme**: ["An extended genotyping framework for Salmonella enterica serovar Typhi, the cause of human typhoid", Wong et al, 2016, Nature Communications](http://www.nature.com/articles/ncomms12827/).
+
+Subsequent updates to the genotyping scheme, including new genotypes and mutations conferring resistance to fluoroquinolones and azithromycin, are summarised in ["Five years of GenoTyphi: updates to the global Salmonella Typhi genotyping framework", Dyson & Holt, 2021, Journal of Infectious Diseases](https://doi.org/10.1093/infdis/jiab414) and this [technical report](https://doi.org/10.5281/zenodo.7407985).
+
+The scheme is now managed by a working group of the [Global Typhoid Genomics Consortium](https://www.typhoidgenomics.org/), which is actively working to expand the scheme based on [new data](https://doi.org/10.7554/eLife.85867), and to establish rules for inclusion and naming of new genotypes. If you would like to suggest new genotypes please post an Issue in this repository, or to join the working group see the [consortium website](https://www.typhoidgenomics.org/).
+
+There are multiple ways to assign GenoTyphi genotypes to new Typhi genomes. 
+
+* To call genotypes from reads, we recommend using [Typhi Mykrobe](https://github.com/typhoidgenomics/genotyphi#Typhi_Mykrobe), which takes as input **sequence reads (fastq files)** from Illumina or long-read platforms. It also detects known mutations in the quinolone-resistance determining region (QRDR) of genes *gyrA*, *gyrB* and *parC*; and the *acrB*-R717Q/L mutations associated with azithromycin resistance; acquired antimicrobial resistance genes; plasmid replicons and major subtypes of the IncHI1 plasmid typically associated with multidrug resistance (list of targets is in 'AMR_genes_mutations_plasmids.csv'). Drugs for which resistance is typed are: `ampicillin`, `azithromycin`, `ceftriaxone`, `ciprofloxacin`, `chloramphenicol`, `sulfonamides`, `trimethoprim`, `trimethoprim-sulfamethoxazole`, `tetracycline` indicate resistant (R) or susceptible (S) predictions for each genome.
+
 
 **Whichever tool you use to access the GenoTyphi scheme, please cite the [GenoTyphi paper](https://doi.org/10.1093/infdis/jiab414).**
 
 **If you use the scripts in this repository, please also cite the repository:** [![DOI](https://zenodo.org/badge/45819844.svg)](https://zenodo.org/badge/latestdoi/45819844)
 
 ## Typhi Mykrobe
+
 
 ### Quick start
 
