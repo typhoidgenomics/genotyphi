@@ -185,6 +185,24 @@ python parse_typhi_mykrobe.py --jsons *.json --prefix mykrobe_out
  
 Sequences and details of probes are available [here](https://doi.org/10.26180/14881701.v1).
 
+### Example with test data
+
+```
+# download paired end reads from ENA
+wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR209/005/ERR2093255/ERR2093255_1.fastq.gz  
+wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR209/005/ERR2093255/ERR2093255_2.fastq.gz  
+
+# Run mykrobe
+mykrobe predict --sample ERR2093255 --species typhi --format json --out ERR2093255.json --seq ERR2093255_1.fastq.gz ERR2093255_2.fastq.gz  
+python parse_typhi_mykrobe.py --jsons ERR2093255.json --prefix mykrobe_out
+```
+
+#### Expected output 
+
+| genome | species | spp_percent | genotype | confidence | lowest support for genotype marker | poorly supported markers | max support for additional markers | additional markers | node support | ampicillin | azithromycin | ceftriaxone | ciprofloxacin | chloramphenicol | sulfamethoxazole | sulfonamides | trimethoprim | tetracycline | IncFIAHI1 | IncHI1A | IncHI1BR27 | IncHI1_ST6 | IncY | IncX3 | IncHI2A | IncI1 | IncL_M | IncFIB_pHCM2 | IncFIB_K | IncN | z66 | num QRDR | parC_S80I | parC_S80R | parC_E84G | parC_E84K | gyrA_S83F | gyrA_S83Y | gyrA_D87G | gyrA_D87N | gyrA_D87V | gyrA_D87Y | gyrB_S464F | gyrB_S464Y | acrB_R717L | acrB_R717Q | mphA | ermB | ereA | blaTEM-1D | blaCTX-M-15 | AmpC1 | blaOXA-7 | blaOXA-134 | blaSHV-12 | qnrS1 | qnrB1 | qnrD1 | catA1 | cmlA1 | sul1 | sul2 | dfrA1 | dfrA5 | dfrA7 | dfrA14 | dfrA15 | dfrA17 | dfrA18 | tetA | tetB | tetC | tetD |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| ERR2093255 | typhi | 91.484 | 4.3.1.1.P1 | strong | - | - | - | - | 1 (1; 0/89); 2 (1; 0/99); 3 (1; 0/102); 4 (1; 76/0); 4.3.1 (1; 74/1); 4.3.1.1 (1; 77/0); 4.3.1.1.P1 (1; 80/0) | R: blaTEM-1D | S | R: blaCTX-M-15 | R: gyrA_S83F;qnrS1 | R: catA1 | R: dfrA7;sul1;sul2 | R: sul1;sul2 | R: dfrA7 | S | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+
 
 ## Other typing tools
 
