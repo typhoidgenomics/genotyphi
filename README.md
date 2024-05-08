@@ -40,6 +40,7 @@ If you use the scripts in this repository, please also cite the repository: [![D
 * [Quick start](#quick-start)
 * [Detailed instructions](#detailed-instructions)
 * [Output format](#explanation-of-columns-in-the-output)
+* [Example with test data](#example-with-test-data)
 
 ### Overview
 To call genotypes from reads, we recommend using 'Typhi Mykrobe'.
