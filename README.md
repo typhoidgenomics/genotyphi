@@ -6,7 +6,7 @@ It also describes how to call genotypes, AMR and plasmid markers from Typhi whol
 
 * [GenoTyphi scheme](#genotyphi-scheme)
 * [Typing from reads using Mykrobe ('Typhi Mykrobe')](#typhi-mykrobe)
-* [Other tools for callling genotypes from reads or assemblies](#other-typing-tools)
+* [Other tools for callling GenoTyphi genotypes from reads or assemblies](#other-typing-tools)
 
 
 ## GenoTyphi Scheme
@@ -208,10 +208,11 @@ python parse_typhi_mykrobe.py --jsons ERR2093255.json --prefix mykrobe_out
 ## Other typing tools
 
 Other tools that can be used to assign GenoTyphi lineages to Typhi genomes
+* Typhi Mykrobe is available as a module in the [Bactopia](https://bactopia.github.io/latest/bactopia-tools/genotyphi/#genotyphi) pipeline. This is a command-line tool that takes as input either reads (fastq), assemblies (fasta), or read/assembly accessions from NCBI, and runs a series of genomic tools including assembly, annotation and typing.
 
-* [Pathogenwatch](https://pathogen.watch/) is an online platfomr, users can upload Typhi genome assemblies and get GenoTyphi lineages, AMR and plasmid determinants, as well as cluster-based phylogenetic trees, as described in [this paper](https://www.nature.com/articles/s41467-021-23091-2). It can also be used to identify public Typhi genomes of a given genotype (and/or from a specific country of interest).
+* [Pathogenwatch](https://pathogen.watch/) is an online platform, users can upload Typhi genome assemblies and get GenoTyphi lineages, AMR and plasmid determinants, as well as cluster-based phylogenetic trees, as described in [this paper](https://www.nature.com/articles/s41467-021-23091-2). It can also be used to identify public Typhi genomes of a given genotype (and/or from a specific country of interest).
 
-* [Original Python implementation](mappingbased/README.md). This takes as input **BAM or VCF files that the user has already generated** by aligning Illumina reads or assemblies to the reference genome CT18. It also detects the QRDR and *acrB* mutations listed in `typhimykrobe/AMR_genes_mutations_plasmids.csv` in this repository, but it does not call acquired genes or plasmid markers.
+* [Original Python implementation of GenoTyphi](mappingbased/README.md). This takes as input **BAM or VCF files that the user has already generated** by aligning Illumina reads or assemblies to the reference genome CT18. It also detects the QRDR and *acrB* mutations listed in `typhimykrobe/AMR_genes_mutations_plasmids.csv` in this repository, but it does not call acquired genes or plasmid markers.
 
 * The [BioHansel](https://github.com/phac-nml/biohansel) tool implements calling of GenoTyphi lineages along with those for other pathogens, as described in [this paper](https://doi.org/10.1099/mgen.0.000651). 
 
