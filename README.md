@@ -31,7 +31,7 @@ The scheme is now managed by a working group of the [Global Typhoid Genomics Con
 
 Whichever tool you use to access the GenoTyphi scheme, please cite the [2021 GenoTyphi paper](https://doi.org/10.1093/infdis/jiab414).
 
-If you use the scripts in this repository, please also cite the repository: [![DOI](https://zenodo.org/badge/45819844.svg)](https://zenodo.org/badge/latestdoi/45819844)
+If you use the scripts in this repository, please also cite the preprint [Ingle et al, BioRxiv 2024](https://www.biorxiv.org/content/10.1101/2024.09.30.613582v1) and this repository: [![DOI](https://zenodo.org/badge/45819844.svg)](https://zenodo.org/badge/latestdoi/45819844)
 
 
 ## Typhi Mykrobe
