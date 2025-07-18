@@ -1,0 +1,22 @@
+# Byte‑code and metadata
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+.env/
+
+# Packaging / build artefacts
+build/
+dist/
+*.egg-info/
+
+# Test and coverage outputs
+.pytest_cache/
+.coverage
+coverage.xml
+
+# OS clutter
+.DS_Store

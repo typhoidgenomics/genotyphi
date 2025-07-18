@@ -1,6 +1,6 @@
 # Genotyping Salmonella Typhi
 
-This repository houses the GenoTyphi genotyping scheme for Salmonella Typhi.
+This repository houses the GenoTyphi genotyping scheme for *Salmonella* Typhi.
 
 It also describes how to call genotypes, AMR and plasmid markers from Typhi whole-genome sequence reads using Mykrobe ('Typhi Mykrobe') and provides links to alternative tools for calling genotypes from reads or assemblies.
 
@@ -13,7 +13,7 @@ It also describes how to call genotypes, AMR and plasmid markers from Typhi whol
 
 The GenoTyphi genotyping scheme divides the *Salmonella* Typhi population into genotypes, which each represent a monophyletic cluster are defined by a unique single nucleotide variant (SNV) marker. There 4 major lineages, which are further divided into >75 different clades and subclades. The relationships between genotypes is conveyed in the name, so e.g. genotypes 2.2 and 2.3 are sister clades in the phylogeny, and 2.2 has daughter subclades 2.2.1, 2.2.2 and so forth, as illustrated in the figure below.
 
-<img src="figs/GenoTyphiTree.png" width="400">
+<p align="center"><picture><source srcset="figs/GenoTyphiTree-dark.png" media="(prefers-color-scheme: dark)"><img src="figs/GenoTyphiTree.png" alt="GenoTyphi tree" width="50%"></picture></p>
 
 ### Scheme specification
 
@@ -21,9 +21,9 @@ The latest scheme specification, mapping marker SNVs to genotypes, is detailed i
 
 ### Scheme development
 
-The initial development of the scheme is described in this paper, ["An extended genotyping framework for Salmonella enterica serovar Typhi, the cause of human typhoid", Wong et al, 2016, Nature Communications](http://www.nature.com/articles/ncomms12827/).
+The initial development of the scheme is described in this paper, ["An extended genotyping framework for *Salmonella enterica* serovar Typhi, the cause of human typhoid", Wong et al, 2016, Nature Communications](http://www.nature.com/articles/ncomms12827/).
 
-Subsequent updates to the genotyping scheme, including new genotypes and mutations conferring resistance to fluoroquinolones and azithromycin, are summarised in ["Five years of GenoTyphi: updates to the global Salmonella Typhi genotyping framework", Dyson & Holt, 2021, Journal of Infectious Diseases](https://doi.org/10.1093/infdis/jiab414) and this [technical report](https://doi.org/10.5281/zenodo.7407985).
+Subsequent updates to the genotyping scheme, including new genotypes and mutations conferring resistance to fluoroquinolones and azithromycin, are summarised in ["Five years of GenoTyphi: updates to the global *Salmonella* Typhi genotyping framework", Dyson & Holt, 2021, Journal of Infectious Diseases](https://doi.org/10.1093/infdis/jiab414) and this [technical report](https://doi.org/10.5281/zenodo.7407985).
 
 The scheme is now managed by a working group of the [Global Typhoid Genomics Consortium](https://www.typhoidgenomics.org/), which is actively working to expand the scheme based on [new data](https://doi.org/10.7554/eLife.85867), and to establish rules for inclusion and naming of new genotypes. If you would like to suggest new genotypes please post an Issue in this repository, or to join the working group see the [consortium website](https://www.typhoidgenomics.org/).
 
@@ -58,7 +58,7 @@ A full list of AMR/plasmid typing targets is in the file `typhimykrobe/AMR_genes
 
 Below you will find instructions for installing and running Mykrobe with the Typhi panel, as well as a Python script for tabulating the results from multiple readsets (input = fastq, single or paired per genome; output = JSON, 1 per genome) into a simple tab-delimited table (input = JSON files, 1 per genome; output = single TSV).
 
-<img src="figs/TyphiMykrobe.png" width="700">
+<p align="center"><picture><source srcset="figs/TyphiMykrobe-dark.png" media="(prefers-color-scheme: dark)"><img src="figs/TyphiMykrobe.png" alt="GenoTyphi tree" width="90%"></picture></p>
 
 ### Quick start
 
