@@ -159,6 +159,10 @@ Note that due to the nested hierarchical nature of the GenoTyphi scheme, we need
 #### Output
 
 * TSV file, one row per input JSON file
+  
+#### Compute requirements
+
+Running `mykrobe predict` with the GenoTyphi scheme typically takes less than one minute to complete per sample. For more information see the [full benchmarking results](https://github.com/typhoidgenomics/TyphoidGenomicsConsortiumMykrobe/tree/main/benchmarking).
 
 #### Example command
 ```
