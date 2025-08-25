@@ -1,0 +1,53 @@
+name: genotyphi unit testing
+
+on: [push]
+
+jobs:
+  unit-testing:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [2.7]
+        #python-version: [2.7, 3.5, 3.6, 3.7, 3.8]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        sudo apt-get install -y --no-install-recommends samtools bcftools bowtie2
+    - name: Get data
+      run: |
+        wget 'https://www.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nucleotide&id=AL513382.1&rettype=fasta' -O tmp.fasta
+        cat tmp.fasta | perl -lane 'if(/>/){s/.+/>AL513382.1/;} print;' > CT18.fasta
+        grep -A 1 ">" CT18.fasta
+        wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR343/ERR343343/ERR343343_1.fastq.gz
+        wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR343/ERR343343/ERR343343_2.fastq.gz
+    - name: map
+      run: |
+        bowtie2-build CT18.fasta CT18.fasta
+        bowtie2 -p 2 -x CT18.fasta -1 ERR343343_1.fastq.gz -2 ERR343343_2.fastq.gz -S output.sam
+    - name: sam to bam
+      run:  samtools view -hbS output.sam > unsorted_output.bam
+    - name: sort bam
+      run:  samtools sort -o output.bam unsorted_output.bam
+    - name: genotyphi
+      run: python genotyphi.py --mode bam --bam output.bam --ref CT18.fasta --ref_id AL513382.1 --output genotypes_test.txt
+# File        Final_call  Final_call_support  Subclade  Clade     PrimaryClade  Support_Subclade  Support_Clade  Support_PrimaryClade  Number of SNPs called  QRDR mutations
+# output.vcf  4.3.1.2     1.0                           4.3.1.2   4             1.0               1.0                                  77                     gyrA-D87G
+    - name: test output
+      run: |
+        ls -lht
+        resultsfile=$(\ls -t *genotypes_test.txt | head -n 1)
+        echo "Results file is $resultsfile"
+        Final_call="4.3.1.2"
+        PrimaryClade="4"
+        Final_call_observed=$(tail -n 1 $resultsfile | cut -f 2)
+        PrimaryClade_observed=$(tail -n 1 $resultsfile | cut -f 6)
+        [ "$PrimaryClade" == "$PrimaryClade_observed" ] && echo "Primary clade value was as expected, $PrimaryClade_observed"
+        [ "$Final_call" == "$Final_call_observed" ] && echo "Final call was as expected, $Final_call_observed_observed"
+        
